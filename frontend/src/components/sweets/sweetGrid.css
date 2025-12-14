@@ -1,0 +1,32 @@
+.sweet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+/* Empty state */
+.empty-grid {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-grid p {
+  color: #777;
+  font-size: 1rem;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .sweet-grid {
+    gap: 18px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .sweet-grid {
+    grid-template-columns: 1fr;
+  }
+}

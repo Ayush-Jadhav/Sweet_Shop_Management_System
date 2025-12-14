@@ -1,0 +1,35 @@
+.home {
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+  background: #f9fafb;
+}
+
+/* Header */
+.home-header {
+  margin-bottom: 24px;
+}
+
+.home-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Loader */
+.loader {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+  margin-top: 40px;
+}
+
+/* Responsive spacing */
+@media (max-width: 768px) {
+  .home {
+    padding: 16px;
+  }
+
+  .home-header h1 {
+    font-size: 1.4rem;
+  }
+}
