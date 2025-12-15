@@ -93,9 +93,7 @@ exports.getOrderDetails = async (req, res) => {
     const userId = req.user._id;
     const userRole = req.user.role;
 
-    /**
-     * Redis cache lookup
-     */
+    // Redis cache lookup
     const cachedOrder = await redisClient.get(`order:${id}`);
     if (cachedOrder) {
       const parsedOrder = JSON.parse(cachedOrder);
@@ -117,9 +115,6 @@ exports.getOrderDetails = async (req, res) => {
       });
     }
 
-    /**
-     * DB lookup
-     */
     const order = await Order.findOne({ orderId: id });
 
     if (!order) {
@@ -129,9 +124,8 @@ exports.getOrderDetails = async (req, res) => {
       });
     }
 
-    /**
-     * Authorization check
-     */
+    
+     //Authorization check
     if (order.userId.toString() !== userId.toString() && userRole !== "admin") {
       return res.status(403).json({
         success: false,
@@ -139,9 +133,8 @@ exports.getOrderDetails = async (req, res) => {
       });
     }
 
-    /**
-     * Cache result (10 minutes)
-     */
+    
+    // Cache result (10 minutes)
     await redisClient.setEx(`order:${id}`, 600, JSON.stringify(order));
 
     return res.status(200).json({

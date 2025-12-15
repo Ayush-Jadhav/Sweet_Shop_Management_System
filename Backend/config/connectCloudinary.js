@@ -1,5 +1,5 @@
 const cloudinary = require("cloudinary").v2;
-const fs = require('fs'); // Node.js built-in module for file system operations
+const fs = require('fs'); 
 require("dotenv").config();
 
 

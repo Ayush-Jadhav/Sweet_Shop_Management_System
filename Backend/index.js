@@ -9,7 +9,7 @@ const app = express();
 const connectWithDB = require("./config/connectDB");
 connectWithDB();
 
-/* 🔥 CORS MUST COME FIRST */
+
 app.use(
   cors({
     origin: "http://localhost:5173",

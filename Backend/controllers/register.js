@@ -5,10 +5,8 @@ const otpGenerator = require("otp-generator");
 
 exports.sendOTP = async (req, res) => {
   try {
-    // fetch data fromm req
     const { email, number } = req.body;
 
-    // check if user already exists
     const isExist = await User.findOne({ email });
     if (isExist) {
       return res.status(400).json({
@@ -34,7 +32,7 @@ exports.sendOTP = async (req, res) => {
       otp,
     });
   } catch (err) {
-    console.error(err); // Log the error for debugging
+    console.error(err); 
     return res.status(500).json({
       success: false,
       message: "Something went wrong. Please try again later.",
@@ -44,7 +42,6 @@ exports.sendOTP = async (req, res) => {
 
 exports.signUp = async (req, res) => {
   try {
-    // fetch data fromm req
     const { fullName, email, number, role, password, confirmPassword, otp } =
       req.body;
 
@@ -56,7 +53,6 @@ exports.signUp = async (req, res) => {
       });
     }
 
-    // check password and confirmPassword
     if (password !== confirmPassword) {
       return res.status(400).json({
         success: false,
@@ -93,7 +89,6 @@ exports.signUp = async (req, res) => {
       });
     }
 
-    // check password and confirmPassword
     if (password !== confirmPassword) {
       return res.status(400).json({
         success: false,

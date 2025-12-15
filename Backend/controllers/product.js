@@ -213,8 +213,6 @@ exports.updateSweet = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // 1. Convert numerical fields from string (FormData/req.body sends strings)
-        // If the fields are not present, they remain undefined.
         const parsedPrice = req.body.price !== undefined ? Number(req.body.price) : undefined;
         const parsedQuantity = req.body.quantity !== undefined ? Number(req.body.quantity) : undefined;
 
@@ -234,12 +232,11 @@ exports.updateSweet = async (req, res) => {
             return res.status(404).json({ success: false, message: "Sweet not found" });
         }
         
-        oldSweetImageUrl = sweet.image; // Save for safety in case of DB failure later
+        oldSweetImageUrl = sweet.image; 
 
-        // 2. IMAGE UPDATE LOGIC
-        // =================================================================
+        // IMAGE UPDATE LOGIC
         if (req.files && req.files.image) {
-            // A. New image is uploaded: Upload new image and delete old one concurrently
+            // New image is uploaded: Upload new image and delete old one concurrently
             const uploadPromise = uploadFile({
                 file: req.files.image,
                 folderName: "sweets",
@@ -257,23 +254,20 @@ exports.updateSweet = async (req, res) => {
             sweet.image = newImageUrl; // Set the new URL
             
         } else if (req.body.remove_image === 'true' && sweet.image !== DEFAULT_SWEET_IMAGE) {
-            // B. User explicitly requested to remove the image (e.g., a checkbox in the form)
+    
             await deleteFile(sweet.image).catch(() => {});
             sweet.image = DEFAULT_SWEET_IMAGE;
         } 
-        // C. No image sent and no remove_image flag means sweet.image remains unchanged.
-        // =================================================================
 
-        // 3. UPDATE OTHER FIELDS
-        // Update fields only if they are present in the request body
+        // No image sent and no remove_image flag means sweet.image remains unchanged.
+
+        // UPDATE OTHER FIELDS
         if (req.body.name !== undefined) sweet.name = req.body.name;
         if (req.body.category !== undefined) sweet.category = req.body.category;
         
-        // Use the parsed numerical values
         if (parsedPrice !== undefined) sweet.price = parsedPrice;
         if (parsedQuantity !== undefined) sweet.quantity = parsedQuantity;
 
-        // 4. Save and Finish
         const updatedSweet = await sweet.save({ session });
 
         await session.commitTransaction();
@@ -287,7 +281,7 @@ exports.updateSweet = async (req, res) => {
     } catch (error) {
         await session.abortTransaction();
 
-        // 5. ROLLBACK LOGIC
+        // ROLLBACK LOGIC
         // If a new image was uploaded successfully but the DB save failed, delete the new image.
         if (newImageUrl) {
             await deleteFile(newImageUrl).catch(() => {});
@@ -301,9 +295,9 @@ exports.updateSweet = async (req, res) => {
     } finally {
         session.endSession();
     }
-};/**
- * DELETE /api/sweets/:id
- */
+};
+
+// DELETE /api/sweets/:id
 exports.deleteSweet = async (req, res) => {
   const session = await mongoose.startSession();
 

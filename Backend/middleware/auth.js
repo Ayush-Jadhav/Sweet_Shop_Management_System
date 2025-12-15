@@ -8,7 +8,6 @@ exports.authenticateUser = async (req, res, next) => {
   try {
     let token;
 
-    // Try cookie first (PRIMARY)
     if (req.cookies?.accessToken) {
       token = req.cookies.accessToken;
     }
@@ -60,9 +59,8 @@ exports.authenticateUser = async (req, res, next) => {
   }
 };
 
-/**
- * Admin-only middleware
- */
+
+// Admin-only middleware
 exports.isAdmin = (req, res, next) => {
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({

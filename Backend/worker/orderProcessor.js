@@ -4,7 +4,6 @@ const Sweet = require("../models/sweet");
 const User = require("../models/user");
 const { sqs } = require("../config/awsSqsConfig");
 const { SendMail } = require("../utils/mailSender");
-const { IoTSecureTunneling, TrustedAdvisor } = require("aws-sdk");
 
 const processOrder = async (orderData) => {
   const session = await mongoose.startSession();
@@ -23,16 +22,15 @@ const processOrder = async (orderData) => {
       return;
     }
 
-    // Idempotency check (VERY IMPORTANT for SQS)
+    // Idempotency check 
     if (order.status !== "PENDING") {
       await session.abortTransaction();
       session.endSession();
       return;
     }
 
-    /**
-     * STEP 1: Atomic & parallel inventory update
-     */
+
+    // Atomic & parallel inventory update
     const updatePromises = order.items.map((item) => {
       console.log(item);
       const sweetId = item.sweetId || item.productId;
@@ -58,24 +56,18 @@ const processOrder = async (orderData) => {
       throw new Error("INSUFFICIENT_STOCK");
     }
 
-    /**
-     * STEP 2: Calculate total amount
-     */
+    //  Calculate total amount
     let totalAmount = 0;
     for (let i = 0; i < order.items.length; i++) {
       totalAmount += updatedSweets[i].price * order.items[i].quantity;
     }
 
-    /**
-     * STEP 3: Update order status
-     */
+    // Update order status
     order.status = "SUCCESSFUL";
     order.totalAmount = totalAmount;
     await order.save({ session });
 
-    /**
-     * STEP 4: Update user order history
-     */
+    // Update user order history
     await User.updateOne(
       { _id: order.userId._id },
       { $push: { orderHistory: order._id } },
@@ -85,9 +77,7 @@ const processOrder = async (orderData) => {
     await session.commitTransaction();
     session.endSession();
 
-    /**
-     * STEP 4: Send success email (OUTSIDE transaction)
-     */
+    // Send success email (OUTSIDE transaction)
     const sweetDetails = await Sweet.find({
       _id: { $in: order.items.map((i) => i.sweetId) },
     });
@@ -150,9 +140,7 @@ const processOrder = async (orderData) => {
   }
 };
 
-/**
- * Poll SQS continuously
- */
+// Poll SQS continuously
 const pollQueue = async () => {
   while (true) {
     try {
