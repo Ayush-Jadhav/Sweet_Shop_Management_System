@@ -5,8 +5,8 @@ import { AUTH_ENDPOINTS } from "../Services/apiEndpoints";
    Axios Instance
 =========================== */
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // http://localhost:4000/api
-  withCredentials: true, // 🔥 cookies required
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
 });
 
 /* ===========================
@@ -66,10 +66,6 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (err) {
         processQueue(err);
-
-        if (window.location.pathname !== "/auth") {
-          window.location.href = "/auth";
-        }
 
         return Promise.reject(err);
       } finally {
