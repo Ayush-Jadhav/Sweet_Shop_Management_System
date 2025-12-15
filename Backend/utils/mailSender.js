@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const {ses} = require("../config/awsSesConfig");
+const { ses } = require("../config/awsSesConfig");
 
 /* exports.SendMail = async ({to,subject,body})=>{
 
@@ -22,29 +22,25 @@ const {ses} = require("../config/awsSesConfig");
 
 } */
 
+exports.SendMail = async ({ to, subject, body }) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.HOST,
+      auth: {
+        user: process.env.USER,
+        pass: process.env.PASS,
+      },
+    });
 
-exports.SendMail = async ({to,subject,body})=>{
-    try{
-        const transporter = nodemailer.createTransport({
-            host: process.env.HOST,
-            auth:{
-                user: process.env.USER,
-                pass: process.env.PASS,
-            }
-        })
-        
-        const mailResponse = await transporter.sendMail({
-            from: `Property On Rent`,
-            to: `${to}`,
-            subject: `${subject}`,
-            html: `${body}`,
-        })
+    const mailResponse = await transporter.sendMail({
+      from: `Property On Rent`,
+      to: `${to}`,
+      subject: `${subject}`,
+      html: `${body}`,
+    });
 
-        return mailResponse;
-    }
-    catch(err){
-        console.log("error in nodemailer",err);
-    }
-}
-
-
+    return mailResponse;
+  } catch (err) {
+    console.log("error in nodemailer", err);
+  }
+};

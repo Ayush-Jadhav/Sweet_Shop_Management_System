@@ -5,14 +5,11 @@ import {
   fetchSweetsByPageService,
   searchSweetsService,
 } from "../Services/sweetManagement/sweetManagementService";
-import { getCurrentUser } from "../Services/auth/authService";
 import { useDebounce } from "../hooks/useDebounce";
 
 import "./Home.css";
 
 const Home = () => {
-  const dispatch = useDispatch();
-
   const [sweets, setSweets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,11 +18,6 @@ const Home = () => {
 
   // debounce search input
   const debouncedSearch = useDebounce(searchQuery, 400);
-
-  // Fetch logged-in user
-  useEffect(() => {
-    dispatch(getCurrentUser());
-  }, []);
 
   useEffect(() => {
     loadSweets();

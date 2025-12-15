@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
     if (!user) {
       dispatch(getCurrentUser());
     }
-  }, [user]);
+  }, [dispatch, user]);
 
   // While checking auth → prevent UI flicker
   if (loading) {
