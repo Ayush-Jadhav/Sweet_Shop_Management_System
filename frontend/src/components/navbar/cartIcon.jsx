@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import CartSidebar from "../cart/CartSidebar";
-import "./CartIcon.css";
+import "./cartIcon.css";
 
 const CartIcon = () => {
   const { items } = useSelector((state) => state.cart);
