@@ -1,5 +1,5 @@
 {
-  "name": "order-processing-system",
+  "name": "sweet-shop-management-system",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "express": "^4.21.2",
     "express-fileupload": "^1.5.2",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.1",
     "nodemon": "^3.1.9",
     "otp-generator": "^4.0.1",
     "redis": "^4.7.0",
