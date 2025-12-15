@@ -20,6 +20,7 @@ export const createSweetService = (formData) => {
   );
 };
 
+
 /**
  * Update an existing sweet (Admin)
  * @param {string} sweetId
@@ -36,6 +37,7 @@ export const updateSweetService = (sweetId, formData) => {
   );
 };
 
+
 /**
  * Delete a sweet (Admin)
  * @param {string} sweetId
@@ -46,6 +48,7 @@ export const deleteSweetService = (sweetId) => {
     `${INVENTORY_MANAGEMENT_ENDPOINTS.DELETE_SWEET}/${sweetId}`
   );
 };
+
 
 /**
  * Fetch sweets by page (Public / Protected)
@@ -58,8 +61,9 @@ export const fetchSweetsByPageService = (pageNumber) => {
   );
 };
 
+
 /**
- * Fetch all sweets (if needed, avoid for large data)
+ * Fetch all sweets 
  */
 export const fetchAllSweetsService = () => {
   return apiConnector(

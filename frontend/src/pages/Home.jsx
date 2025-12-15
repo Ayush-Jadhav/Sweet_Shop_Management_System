@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import SweetGrid from "../components/sweets/SweetGrid";
+import SweetGrid from "../components/sweets/sweetGrid";
 import {
   fetchSweetsByPageService,
   searchSweetsService,
@@ -16,25 +16,20 @@ const Home = () => {
   const [sweets, setSweets] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 get search query from redux (Navbar updates this)
+  // get search query from redux (Navbar updates this)
   const searchQuery = useSelector((state) => state.search?.query || "");
 
-  // 🔹 debounce search input
+  // debounce search input
   const debouncedSearch = useDebounce(searchQuery, 400);
 
-  /* =========================
-     Fetch logged-in user
-  ========================= */
+  // Fetch logged-in user
   useEffect(() => {
     dispatch(getCurrentUser());
   }, [dispatch]);
 
-  /* =========================
-     Load sweets (search / default)
-  ========================= */
+
   useEffect(() => {
     loadSweets();
-    // eslint-disable-next-line
   }, [debouncedSearch]);
 
   const loadSweets = async () => {
@@ -43,14 +38,13 @@ const Home = () => {
 
       let res;
 
-      // SEARCH MODE
+
       if (debouncedSearch.trim()) {
         res = await searchSweetsService({
           name: debouncedSearch,
           category: debouncedSearch,
         });
       }
-      // DEFAULT MODE (page 1)
       else {
         res = await fetchSweetsByPageService(1);
       }

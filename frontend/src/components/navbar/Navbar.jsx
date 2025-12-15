@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef, useEffect } from "react";
-import CartIcon from "./CartIcon";
+import CartIcon from "./cartIcon";
 import { setSearchQuery } from "../../redux/slice/searchSlice";
 import { logout } from "../../Services/auth/authService";
 import "./Navbar.css";
