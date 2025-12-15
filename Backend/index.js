@@ -12,7 +12,7 @@ connectWithDB();
 const allowedOrigins = [
   "https://sweet-shop-management-system-one-mu.vercel.app",
   "https://sweet-shop-management-system-ayush-jadhavs-projects-325ccd82.vercel.app",
-  "http://localhost:3000",
+  "http://localhost:5173",
 ];
 
 const corsOptions = {
@@ -29,6 +29,8 @@ const corsOptions = {
   optionsSuccessStatus: 200,
   allowedHeaders: ["Content-Type", "Authorization"],
 };
+
+app.use(cors(corsOptions));
 
 // Middlewares
 app.use(express.json());

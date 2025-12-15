@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
-import AuthPage from "../pages/AuthPage"
+import AuthPage from "../pages/AuthPage";
 import OrderHistory from "../pages/OrderHistory";
 import OrderDetails from "../pages/OrderDetails";
 import AdminSweetManagement from "../pages/admin/AdminSweetManagement";

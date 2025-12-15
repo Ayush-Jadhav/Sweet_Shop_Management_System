@@ -1,36 +1,44 @@
+/*
+ * Theme Colors:
+ * Primary Accent: #A82245 (Deep Raspberry)
+ * Background: #F9F9F9 (Light Cream)
+ * Text: #333333 (Dark Charcoal)
+*/
+
 /* ===========================
-   AUTH PAGE LAYOUT
+    AUTH PAGE LAYOUT
 =========================== */
 .auth-page {
   min-height: calc(100vh - 64px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+  /* Using the soft cream background */
+  background: #f9f9f9;
   padding: 20px;
 }
 
 /* ===========================
-   AUTH CARD (ONLY ONE CARD)
+    AUTH CARD (ONLY ONE CARD)
 =========================== */
 .auth-card {
   width: 100%;
   max-width: 420px;
   background: #ffffff;
   border-radius: 14px;
-  padding: 28px 24px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  padding: 30px 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* ===========================
-   TOGGLE BUTTONS
+    TOGGLE BUTTONS
 =========================== */
 .auth-toggle {
   display: flex;
-  background: #f3f4f6;
+  background: #f0f0f0;
   border-radius: 999px;
   padding: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .auth-toggle button {
@@ -42,17 +50,19 @@
   cursor: pointer;
   border-radius: 999px;
   transition: all 0.25s ease;
-  color: #374151;
+  color: #555555;
 }
 
 .auth-toggle button.active {
-  background: #e11d48;
+  /* Deep Raspberry accent color for active state */
+  background: #a82245;
   color: #ffffff;
-  box-shadow: 0 6px 14px rgba(225, 29, 72, 0.3);
+  /* Themed shadow */
+  box-shadow: 0 4px 10px rgba(168, 34, 69, 0.3);
 }
 
 /* ===========================
-   FORM ANIMATION
+    FORM ANIMATION
 =========================== */
 .auth-content {
   animation: fadeIn 0.25s ease-in-out;
@@ -70,16 +80,18 @@
 }
 
 /* ===========================
-   AUTH FORM (INTERNAL ONLY)
+    AUTH FORM (INTERNAL ONLY)
 =========================== */
 .authForm {
   width: 100%;
 }
 
 .authTitle {
+  /* Using theme typography */
+  font-family: "Playfair Display", serif;
   text-align: center;
-  font-size: 1.6rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
   color: #333;
 }
@@ -109,53 +121,66 @@
 
 .formGroup input:focus,
 .formGroup select:focus {
-  border-color: #ec4899;
+  /* Deep Raspberry focus color */
+  border-color: #a82245;
+  box-shadow: 0 0 0 1px #a82245;
 }
 
-/* ===== PASSWORD INPUT ===== */
+/* ===== PASSWORD INPUT FIX ===== */
 .passInput {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   position: relative;
 }
 
 .passInput input {
-  padding-right: 2.5rem;
+  flex: 1;
+  padding-right: 40px;
 }
 
 .visibleIcon {
+  display: inline-block;
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 10px; /* Adjust for alignment */
   cursor: pointer;
-  color: #777;
+  padding: 5px;
+  font-size: 20px;
+}
+
+.visibleIcon:hover {
+  transform: scale(1.1);
+  color: #a82245;
 }
 
 /* ===== SUBMIT BUTTON ===== */
 .authButton {
   width: 100%;
-  padding: 0.7rem;
-  margin-top: 0.5rem;
-  background: #ec4899;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  /* Deep Raspberry theme color */
+  background: #a82245;
   color: #fff;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.25s ease;
 }
 
 .authButton:hover {
-  background: #db2777;
+  /* Darker Deep Raspberry on hover */
+  background: #901f3b;
 }
 
 .authButton:disabled {
-  background: #f3a6c8;
+  background: #ccc;
   cursor: not-allowed;
 }
 
 /* ===========================
-   MOBILE
+    MOBILE
 =========================== */
 @media (max-width: 480px) {
   .auth-card {
@@ -163,25 +188,25 @@
   }
 
   .authTitle {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
   }
 }
 
-
 /* =========================
-   OTP VERIFY PAGE
+    OTP VERIFY PAGE
 ========================= */
 .otp-content {
   min-height: calc(100vh - 64px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+  /* Soft cream background */
+  background: #f9f9f9;
   padding: 20px;
 }
 
 /* =========================
-   OTP CARD
+    OTP CARD
 ========================= */
 .content-box {
   width: 100%;
@@ -189,16 +214,18 @@
   background: #ffffff;
   border-radius: 14px;
   padding: 28px 24px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
   animation: fadeIn 0.3s ease-in-out;
 }
 
 .content-box-heading {
-  font-size: 1.6rem;
-  font-weight: 600;
+  /* Using theme typography */
+  font-family: "Playfair Display", serif;
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 8px;
-  color: #111827;
+  color: #333333;
 }
 
 .content-box-para {
@@ -208,56 +235,58 @@
 }
 
 /* =========================
-   OTP INPUTS
+    OTP INPUTS
 ========================= */
 .otp-container {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 25px;
 }
 
 .otp-input {
   width: 50px;
-  height: 48px;
+  height: 50px;
   padding: 0 12px;
   border-radius: 10px;
   border: 1px solid #d1d5db;
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   outline: none;
   transition: all 0.2s ease;
 }
 
 .otp-input:focus {
-  border-color: #ec4899;
-  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.25);
+  /* Deep Raspberry focus color */
+  border-color: #a82245;
+  box-shadow: 0 0 0 3px rgba(168, 34, 69, 0.2);
 }
 
 /* =========================
-   VERIFY BUTTON
+    VERIFY BUTTON
 ========================= */
 .verify-button {
   width: 100%;
-  padding: 0.7rem;
+  padding: 0.8rem;
   margin-top: 10px;
-  background: #ec4899;
+  /* Deep Raspberry theme color */
+  background: #a82245;
   color: #ffffff;
   border: none;
   border-radius: 10px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.25s ease;
 }
 
 .verify-button:hover {
-  background: #db2777;
+  background: #901f3b;
 }
 
 /* =========================
-   LINKS & ACTIONS
+    LINKS & ACTIONS
 ========================= */
 .links {
   display: flex;
@@ -268,7 +297,7 @@
 
 .back-to-signup {
   font-size: 0.85rem;
-  color: #374151;
+  color: #555;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -277,13 +306,15 @@
 
 .back-to-signup:hover {
   text-decoration: underline;
+  color: #a82245;
 }
 
 .resend-button {
   border: none;
   background: transparent;
   font-size: 0.85rem;
-  color: #ec4899;
+  /* Deep Raspberry link color */
+  color: #a82245;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -292,22 +323,24 @@
 
 .resend-button:hover {
   text-decoration: underline;
+  color: #901f3b;
 }
 
 /* =========================
-   LOADING SPINNER
+    LOADING SPINNER
 ========================= */
 .spinner {
   width: 48px;
   height: 48px;
   border: 4px solid #f3f4f6;
-  border-top-color: #ec4899;
+  /* Deep Raspberry spin color */
+  border-top-color: #a82245;
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
 }
 
 /* =========================
-   ANIMATIONS
+    ANIMATIONS
 ========================= */
 @keyframes spin {
   to {
@@ -327,7 +360,7 @@
 }
 
 /* =========================
-   MOBILE
+    MOBILE
 ========================= */
 @media (max-width: 480px) {
   .otp-input {
@@ -340,4 +373,3 @@
     padding: 22px 18px;
   }
 }
-

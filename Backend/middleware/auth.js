@@ -31,9 +31,7 @@ exports.authenticateUser = async (req, res, next) => {
     }
 
     // DB lookup
-    const user = await User.findById(userId).select(
-      "_id email role firstName lastName"
-    );
+    const user = await User.findById(userId).select("_id email role fullName");
 
     if (!user) {
       return res.status(401).json({
@@ -43,11 +41,7 @@ exports.authenticateUser = async (req, res, next) => {
     }
 
     // Cache user (1 hour)
-    await redisClient.setEx(
-      `user:${userId}`,
-      3600,
-      JSON.stringify(user)
-    );
+    await redisClient.setEx(`user:${userId}`, 3600, JSON.stringify(user));
 
     req.user = user;
     next();
@@ -58,7 +52,6 @@ exports.authenticateUser = async (req, res, next) => {
     });
   }
 };
-
 
 // Admin-only middleware
 exports.isAdmin = (req, res, next) => {

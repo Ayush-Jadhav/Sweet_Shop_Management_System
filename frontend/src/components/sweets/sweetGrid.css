@@ -1,32 +1,59 @@
+/* --- sweetGrid.css (Updated for wider cards) --- */
+
 .sweet-grid {
+  /* Increased min card width to 260px for a more substantial look. 
+     This keeps the max-width around 5 cards (1440px) */
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px 0;
+
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px;
+  /* Key Change: minmax(260px, 1fr) for wider cards */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
 }
 
-/* Empty state */
+/* Empty state (No change) */
 .empty-grid {
   min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 40px auto;
+  max-width: 600px;
 }
 
 .empty-grid p {
   color: #777;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-style: italic;
 }
 
-/* Tablet */
-@media (max-width: 768px) {
+/* Responsive adjustments */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
   .sweet-grid {
-    gap: 18px;
+    max-width: 100%; /* Allows it to fill the page content */
+    gap: 24px;
+    /* Allows for 3 columns on most tablets */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 }
 
-/* Mobile */
+/* Smaller Tablet/Larger Mobile (max-width: 768px) - 2 columns */
+@media (max-width: 768px) {
+  .sweet-grid {
+    max-width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    padding: 10px 0;
+  }
+}
+
+/* Mobile (max-width: 480px) - 1 column */
 @media (max-width: 480px) {
   .sweet-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 }

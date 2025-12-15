@@ -1,103 +1,133 @@
+/* --- sweetCard.css (Updated for tighter spacing and image-emphasis) --- */
+
+/*
+ * Theme Colors:
+ * Primary Accent: #A82245 (Deep Raspberry)
+*/
+
 .sweet-card {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
 }
 
 .sweet-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
 }
 
-/* Image */
+/* --- Image Section --- */
 .sweet-image-wrapper {
   position: relative;
+  /* Reduced height slightly (from 200px) to give content more weight */
   height: 180px;
   overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .sweet-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
 }
 
-/* Out of stock badge */
+.sweet-card:hover .sweet-image {
+  transform: scale(1.05);
+}
+
+/* Out of stock badge (No change) */
 .stock-badge {
   position: absolute;
   top: 10px;
-  left: 10px;
-  background: #e11d48;
+  right: 10px;
+  background: #a82245;
   color: #ffffff;
   font-size: 0.75rem;
-  padding: 4px 8px;
+  font-weight: 600;
+  padding: 4px 10px;
   border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Content */
+/* --- Content Section --- */
 .sweet-content {
-  padding: 14px;
+  /* Reduced vertical padding (from 16px) for tighter feel */
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 .sweet-name {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  /* Reduced margin for tighter look */
+  margin-bottom: 2px;
+  color: #333333;
 }
 
 .sweet-category {
-  font-size: 0.85rem;
-  color: #777;
-  margin-bottom: 10px;
+  font-size: 0.8rem;
+  color: #777777;
+  /* Key Change: Reduced margin significantly (from 15px) */
+  margin-bottom: 8px;
+  text-transform: capitalize;
 }
 
-/* Footer */
+/* --- Footer Section (Price & Button) --- */
 .sweet-footer {
   margin-top: auto;
+  /* Reduced padding-top (from 10px) to reduce empty space */
+  padding-top: 6px;
+  border-top: 1px solid #eeeeee;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .sweet-price {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #111;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #a82245;
 }
 
-/* Button */
-.add-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
+/* --- Button (No functional change, just alignment consistency) --- */
+.add-to-cart-btn {
+  padding: 8px 18px;
+  border-radius: 25px;
   border: none;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  background: #16a34a;
+  background: #a82245;
   color: #ffffff;
   transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 6px rgba(168, 34, 69, 0.3);
 }
 
-.add-btn:hover {
-  background: #15803d;
-  transform: scale(1.05);
+.add-to-cart-btn:hover:not(.add-to-cart-btn--disabled) {
+  background: #901f3b;
+  transform: translateY(-1px);
 }
 
-.add-btn.disabled {
-  background: #ccc;
+.add-to-cart-btn--disabled {
+  background: #cccccc;
+  color: #888888;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
-/* Responsive grid handling */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .sweet-image-wrapper {
-    height: 150px;
+    height: 150px; /* Adjusted height for smaller screens */
   }
 }

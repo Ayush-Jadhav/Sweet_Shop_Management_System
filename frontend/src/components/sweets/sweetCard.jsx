@@ -6,15 +6,11 @@ const SweetCard = ({ sweet }) => {
   const dispatch = useDispatch();
 
   const outOfStock = sweet.quantity === 0;
-  
+
   return (
     <div className="sweet-card">
       <div className="sweet-image-wrapper">
-        <img
-          src={sweet.image}
-          alt={sweet.name}
-          className="sweet-image"
-        />
+        <img src={sweet.image} alt={sweet.name} className="sweet-image" />
 
         {outOfStock && <span className="stock-badge">Out of Stock</span>}
       </div>
@@ -29,7 +25,9 @@ const SweetCard = ({ sweet }) => {
           <button
             disabled={outOfStock}
             onClick={() => dispatch(addToCart(sweet))}
-            className={`add-btn ${outOfStock ? "disabled" : ""}`}
+            className={`add-to-cart-btn ${
+              outOfStock ? "add-to-cart-btn--disabled" : ""
+            }`}
           >
             Add to Cart
           </button>

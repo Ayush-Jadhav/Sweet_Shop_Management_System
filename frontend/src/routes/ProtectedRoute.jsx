@@ -7,7 +7,7 @@ import { getCurrentUser } from "../../Services/auth/authService";
  * @param {ReactNode} children
  * @param {boolean} adminOnly - restrict route to admin users
  */
-const ProtectedRoute = ({ children, adminOnly = false }) => {
+const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();
 
   const { user, loading } = useSelector((state) => state.auth);
@@ -17,25 +17,18 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
     if (!user) {
       dispatch(getCurrentUser());
     }
-  }, [dispatch, user]);
+  }, [user]);
 
   // While checking auth → prevent UI flicker
   if (loading) {
     return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>
-        Loading...
-      </div>
+      <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>
     );
   }
 
   // Not logged in
   if (!user) {
     return <Navigate to="/auth" replace />;
-  }
-
-  // Admin-only protection
-  if (adminOnly && user.role !== "admin") {
-    return <Navigate to="/" replace />;
   }
 
   return children;

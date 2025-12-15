@@ -17,33 +17,33 @@ const SignUpForm = () => {
     fullName: "",
     email: "",
     number: "",
-    role: "user", 
+    role: "customer",
     password: "",
     confirmPassword: "",
   });
 
-const handleChange = (e) => {
+  const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  if (formData.password !== formData.confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
-  dispatch(setSignupData(formData)); 
-  dispatch(sendOTP(formData.email, formData.number, navigate));
-};
+    console.log("Signup data:", formData);
+    dispatch(setSignupData(formData));
+    dispatch(sendOTP(formData.email, formData.number, navigate));
+  };
 
   return (
     <form className="signUpForm signup-scroll" onSubmit={handleSubmit}>
-
       <div className="formGroup">
         <label>Name</label>
         <input
@@ -77,13 +77,8 @@ const handleSubmit = (e) => {
 
       <div className="formGroup">
         <label>Role</label>
-        <select
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          required
-        >
-          <option value="user">User</option>
+        <select name="role" value={formData.role} onChange={handleChange}>
+          <option value="customer">Customer</option>
           <option value="admin">Admin</option>
         </select>
       </div>
@@ -98,7 +93,11 @@ const handleSubmit = (e) => {
             onChange={handleChange}
             required
           />
-          <span type="button" onClick={() => setVisiblePass(!visiblePass)}>
+          <span
+            type="button"
+            className="visibleIcon"
+            onClick={() => setVisiblePass(!visiblePass)}
+          >
             {visiblePass ? <BiSolidHide /> : <BiSolidShow />}
           </span>
         </div>
@@ -114,14 +113,18 @@ const handleSubmit = (e) => {
             onChange={handleChange}
             required
           />
-          <span type="button" onClick={() => setVisibleConfirmPass(!visibleConfirmPass)}>
+          <span
+            type="button"
+            className="visibleIcon"
+            onClick={() => setVisibleConfirmPass(!visibleConfirmPass)}
+          >
             {visibleConfirmPass ? <BiSolidHide /> : <BiSolidShow />}
           </span>
         </div>
       </div>
 
       <button type="submit" className="authButton" disabled={loading}>
-        {loading ? "Sending OTP..." : "Sign Up" }
+        {loading ? "Sending OTP..." : "Sign Up"}
       </button>
     </form>
   );

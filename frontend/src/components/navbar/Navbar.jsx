@@ -25,7 +25,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -41,7 +40,7 @@ const Navbar = () => {
     <nav className="navbar">
       {/* Logo */}
       <Link to="/" className="navbar-logo">
-        Sweet Management
+        Apki Sweets
       </Link>
 
       {/* Search */}
@@ -51,11 +50,13 @@ const Navbar = () => {
           placeholder="Search sweets by name or category..."
           value={query}
           onChange={handleSearchChange}
+          className="search-input"
         />
       </div>
 
       {/* Actions */}
       <div className="navbar-actions">
+        {/* CartIcon assumed to be here */}
         <CartIcon />
 
         {!user ? (
@@ -64,12 +65,14 @@ const Navbar = () => {
           </Link>
         ) : (
           <div className="user-menu" ref={menuRef}>
-            <span
-              className="user-icon"
+            <button
+              className="user-profile-btn"
               onClick={() => setOpen((prev) => !prev)}
+              aria-expanded={open}
+              aria-label="User Menu"
             >
-              👤
-            </span>
+              {user.role === "admin" ? "⚙️" : "👤"}
+            </button>
 
             {open && (
               <div className="dropdown">
@@ -93,7 +96,10 @@ const Navbar = () => {
                   </button>
                 )}
 
-                <button className="logout" onClick={logoutHandler}>
+                <button
+                  className="dropdown__logout-btn"
+                  onClick={logoutHandler}
+                >
                   Logout
                 </button>
               </div>

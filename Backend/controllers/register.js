@@ -32,7 +32,7 @@ exports.sendOTP = async (req, res) => {
       otp,
     });
   } catch (err) {
-    console.error(err); 
+    console.error(err);
     return res.status(500).json({
       success: false,
       message: "Something went wrong. Please try again later.",
@@ -45,8 +45,17 @@ exports.signUp = async (req, res) => {
     const { fullName, email, number, role, password, confirmPassword, otp } =
       req.body;
 
+    console.log("Received signup data:", req.body);
     // validate data
-    if (!fullName || !email || !number || !password || !confirmPassword || !otp) {
+    if (
+      !fullName ||
+      !email ||
+      !role ||
+      !number ||
+      !password ||
+      !confirmPassword ||
+      !otp
+    ) {
       return res.status(400).json({
         success: false,
         message: "All required fields must be provided.",

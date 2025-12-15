@@ -25,8 +25,7 @@ const Home = () => {
   // Fetch logged-in user
   useEffect(() => {
     dispatch(getCurrentUser());
-  }, [dispatch]);
-
+  }, []);
 
   useEffect(() => {
     loadSweets();
@@ -38,14 +37,12 @@ const Home = () => {
 
       let res;
 
-
       if (debouncedSearch.trim()) {
         res = await searchSweetsService({
           name: debouncedSearch,
           category: debouncedSearch,
         });
-      }
-      else {
+      } else {
         res = await fetchSweetsByPageService(1);
       }
 
@@ -59,15 +56,31 @@ const Home = () => {
   };
 
   return (
-    <div className="home">
-      <div className="home-header">
-        <h1>Available Sweets</h1>
+    <div className="home-page">
+      <div className="home-page__title-area">
+        <h1>
+          {debouncedSearch.trim()
+            ? `Search Results for "${debouncedSearch}"`
+            : "Sweets Collection"}
+        </h1>
       </div>
 
       {loading ? (
-        <div className="loader">Loading sweets...</div>
-      ) : (
+        <div className="loader">
+          <p>Loading the finest treats...</p>
+          {/* You might add a spinning icon here for better UX */}
+        </div>
+      ) : sweets.length > 0 ? (
         <SweetGrid sweets={sweets} />
+      ) : (
+        <div className="home-page__empty-state">
+          <h2>No Sweets Found</h2>
+          <p>
+            {debouncedSearch.trim()
+              ? `We couldn't find any sweets matching "${debouncedSearch}". Try a different search term!`
+              : "It looks like our shelves are empty right now. Check back soon!"}
+          </p>
+        </div>
       )}
     </div>
   );

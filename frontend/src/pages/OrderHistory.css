@@ -1,103 +1,176 @@
-/* Page */
+/*
+ * Theme Colors:
+ * Primary Accent: #A82245 (Deep Raspberry)
+ * Background: #F9F9F9 (Light Cream)
+ * Text: #333333 (Dark Charcoal)
+*/
+
+/* --- Page Base and Title (No major changes here) --- */
 .order-history-page {
   min-height: calc(100vh - 70px);
-  padding: 24px 16px;
-  background: #f9fafb;
+  padding: 40px 60px;
+  background: #f9f9f9;
 }
 
-/* Title */
 .order-history-title {
-  max-width: 900px;
-  margin: 0 auto 20px;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #111827;
+  max-width: 1240px;
+  margin: 0 auto 35px;
+  font-family: "Playfair Display", serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333333;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 5px;
 }
 
-/* List */
 .order-history-list {
-  max-width: 900px;
+  max-width: 1240px;
   margin: 0 auto;
 }
 
-/* Order Card */
+/* --- Order Card (Condensed Spacing) --- */
 .order-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   background: #ffffff;
-  padding: 16px 20px;
-  margin-bottom: 14px;
+  /* Reduced vertical padding (from 20px) to make it slimmer */
+  padding: 14px 25px;
+  margin-bottom: 16px;
 
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
   cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .order-card:hover {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
-/* Left info */
+/* --- Left Info (Condensed Gap) --- */
 .order-info {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  /* Reduced gap (from 5px) */
+  gap: 2px;
 }
 
 .order-id {
-  font-weight: 600;
-  color: #111827;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #333333;
+}
+.order-id__number {
+  color: #a82245;
 }
 
 .order-amount {
-  color: #374151;
-  font-size: 0.95rem;
+  color: #333333;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.order-amount__value {
+  font-weight: 800;
+  color: #a82245;
+}
+
+/* --- Right Side Group (Status and Date) --- */
+.order-status-group {
+  /* Set to column to stack status on top of date */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align all items to the right */
+  gap: 4px; /* Small space between status and date */
 }
 
 .order-date {
-  color: #6b7280;
+  /* Moved here from order-info */
+  color: #999999;
   font-size: 0.85rem;
+  white-space: nowrap; /* Keep date on one line */
 }
 
-/* Status (Right side) */
-.order-status {
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
+/* --- Status Badge (No functional changes) --- */
+.order-status-badge {
+  padding: 6px 14px; /* Slightly smaller padding to fit tighter design */
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
   white-space: nowrap;
+  letter-spacing: 0.5px;
 }
 
 /* Status colors */
-.order-status.SUCCESSFUL {
-  background: #dcfce7;
-  color: #166534;
+.order-status-badge--successful {
+  background: #d4edda;
+  color: #155724;
 }
 
-.order-status.PENDING {
-  background: #fef3c7;
-  color: #92400e;
+.order-status-badge--pending {
+  background: #fff3cd;
+  color: #856404;
 }
 
-.order-status.FAILED {
-  background: #fee2e2;
-  color: #991b1b;
+.order-status-badge--failed,
+.order-status-badge--cancelled {
+  background: #f8d7da;
+  color: #721c24;
 }
 
-/* Mobile */
+/* --- Loading and Empty States (No changes) --- */
+.order-history-loading-state,
+.order-history-empty-state {
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 1.2rem;
+  color: #777;
+}
+
+.empty-state-btn {
+  margin-top: 20px;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 25px;
+  background: #a82245;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.empty-state-btn:hover {
+  background: #901f3b;
+}
+
+/* --- Responsive --- */
+/* The mobile adjustment needs updating to handle the new structure */
 @media (max-width: 600px) {
   .order-card {
-    flex-direction: column;
-    align-items: flex-start;
+    /* Keep horizontal layout until very small screens */
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 20px;
     gap: 10px;
   }
 
-  .order-status {
-    align-self: flex-end;
+  .order-info {
+    flex: 1; /* Ensure info takes priority space */
+  }
+
+  /* When space is tight, stack info and status vertically */
+  @media (max-width: 450px) {
+    .order-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .order-status-group {
+      /* Move the entire status/date group to the right */
+      align-self: flex-end;
+    }
   }
 }

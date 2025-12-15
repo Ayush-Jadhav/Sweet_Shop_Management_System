@@ -1,29 +1,54 @@
+/*
+ * Theme Colors:
+ * Primary Accent: #A82245 (Deep Raspberry)
+ * Background: #FFFFFF
+*/
+
+/* ===== Icon Container ===== */
 .cart-icon {
   position: relative;
+  /* Defining the button shape, similar to the user-profile-btn */
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* Circular shape */
+
   font-size: 1.4rem;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+
+  /* Applying a hover effect that uses the theme accent for visual feedback */
+  color: #333333; /* Default icon color */
 }
 
 .cart-icon:hover {
-  transform: scale(1.1);
+  /* Use a subtle background change on hover */
+  background-color: #f0f0f0;
+  /* Subtle scaling instead of transform */
+  transform: none;
 }
 
 /* Badge */
 .cart-badge {
   position: absolute;
-  top: -6px;
-  right: -8px;
+  /* Adjusted position to sit perfectly on the top-right edge of the 40px container */
+  top: -2px;
+  right: -2px;
 
-  background-color: #e11d48;
+  /* Using the Deep Raspberry theme accent */
+  background-color: #a82245;
   color: #ffffff;
 
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700; /* Increased weight for visibility */
 
-  min-width: 18px;
-  height: 18px;
+  min-width: 20px; /* Slightly larger minimum size for roundness */
+  height: 20px;
   padding: 0 4px;
 
   display: flex;
@@ -31,7 +56,9 @@
   justify-content: center;
 
   border-radius: 999px;
-  box-shadow: 0 0 0 2px #ffffff;
+  /* Theme-aligned shadow to make it pop */
+  box-shadow: 0 0 0 2px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1; /* Ensure badge is always on top */
 }
 
 /* Mobile tap comfort */

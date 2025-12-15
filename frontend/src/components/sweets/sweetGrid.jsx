@@ -5,7 +5,7 @@ const SweetGrid = ({ sweets }) => {
   if (!sweets || sweets.length === 0) {
     return (
       <div className="empty-grid">
-        <p>No sweets available 🍬</p>
+        <p>No sweets available</p>
       </div>
     );
   }

@@ -1,39 +1,49 @@
-/* Overlay */
+/*
+ * Theme Colors:
+ * Primary Accent: #A82245 (Deep Raspberry)
+ * Text: #333333 (Dark Charcoal)
+*/
+
+/* --- Overlay --- */
 .cart-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  /* Darker overlay for better focus */
+  background: rgba(0, 0, 0, 0.6);
   z-index: 999;
 }
 
-/* Sidebar */
+/* --- Sidebar --- */
 .cart-sidebar {
   position: fixed;
   top: 0;
   right: 0;
   height: 100vh;
-  width: 380px;
-  max-width: 100%;
+  /* Slightly wider on desktop for better item visibility */
+  width: 420px;
+  max-width: 95%;
   background: #ffffff;
 
   display: flex;
   flex-direction: column;
 
   transform: translateX(100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother transition */
   z-index: 1000;
 
-  box-shadow: -10px 0 25px rgba(0, 0, 0, 0.15);
+  /* Softer, more modern shadow */
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
 }
 
 .cart-sidebar.open {
   transform: translateX(0);
 }
 
-/* Header */
+/* --- Header --- */
 .cart-header {
-  padding: 16px;
-  border-bottom: 1px solid #eee;
+  /* Increased padding */
+  padding: 20px 24px;
+  border-bottom: 2px solid #f0f0f0; /* Thicker, defined separator */
 
   display: flex;
   justify-content: space-between;
@@ -41,67 +51,117 @@
 }
 
 .cart-header h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.5rem; /* Larger, more prominent title */
+  font-weight: 700;
+  color: #333333;
+  font-family: "Playfair Display", serif;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1.8rem; /* Larger, easier to hit */
+  color: #777;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
-/* Body */
+.close-btn:hover {
+  color: #a82245;
+}
+
+/* --- Body (Item List) --- */
 .cart-body {
   flex: 1;
-  padding: 16px;
+  /* Increased padding */
+  padding: 20px 24px;
   overflow-y: auto;
 }
 
 .empty-cart {
   text-align: center;
-  color: #777;
-  margin-top: 40px;
+  color: #999;
+  font-style: italic;
+  margin-top: 60px;
+  font-size: 1.1rem;
 }
 
-/* Footer */
+/* --- Footer --- */
 .cart-footer {
-  padding: 16px;
-  border-top: 1px solid #eee;
+  /* Increased padding */
+  padding: 20px 24px;
+  border-top: 2px solid #f0f0f0;
 }
 
 .cart-total {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 15px; /* More space before the button */
+  font-size: 1.2rem;
+  color: #333333;
 }
 
+.cart-total-amount {
+  /* Use theme color for the total price emphasis */
+  font-weight: 700;
+  color: #a82245;
+  font-size: 1.4rem;
+}
+
+/* Primary Action Button: Place Order */
 .place-order-btn {
   width: 100%;
-  padding: 12px;
-  background: #e11d48;
+  padding: 15px; /* Taller button */
+  /* Use Deep Raspberry theme color */
+  background: #a82245;
   color: #ffffff;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 8px; /* Slightly more modern radius */
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(168, 34, 69, 0.3); /* Themed shadow */
 }
 
 .place-order-btn:hover:not(:disabled) {
-  background: #be123c;
+  background: #901f3b;
+  box-shadow: 0 6px 10px rgba(168, 34, 69, 0.4);
 }
 
 .place-order-btn:disabled {
-  background: #ccc;
+  background: #cccccc;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Mobile */
+/* Secondary Action Button: Clear Cart */
+.clear-cart-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background: none;
+  border: 1px solid #ccc;
+  color: #777;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-cart-btn:hover:not(:disabled) {
+  border-color: #dc2626;
+  color: #dc2626;
+  background: #fffafa;
+}
+
+/* --- Mobile Adjustments --- */
 @media (max-width: 480px) {
   .cart-sidebar {
     width: 100%;
+    /* Remove shadow on mobile for edge-to-edge feel */
+    box-shadow: none;
   }
 }

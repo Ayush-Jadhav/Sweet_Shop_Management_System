@@ -1,8 +1,11 @@
 import { apiConnector } from "../../api/apiConnector";
 import { AUTH_ENDPOINTS } from "../apiEndpoints";
-import { setUser, logoutUser, setAuthLoading } from "../../redux/slice/authSlice";
+import {
+  setUser,
+  logoutUser,
+  setAuthLoading,
+} from "../../redux/slice/authSlice";
 import { clearCart } from "../../redux/slice/cartSlice";
-
 
 /* ======================
    LOGIN
@@ -11,11 +14,7 @@ export const logIn = (formData, navigate) => async (dispatch) => {
   try {
     dispatch(setAuthLoading(true));
 
-    const response = await apiConnector(
-      "POST",
-      AUTH_ENDPOINTS.LOGIN,
-      formData
-    );
+    const response = await apiConnector("POST", AUTH_ENDPOINTS.LOGIN, formData);
 
     // backend sends userInfo
     dispatch(setUser(response.user));
@@ -31,8 +30,10 @@ export const logIn = (formData, navigate) => async (dispatch) => {
 /* ======================
    SEND OTP
 ====================== */
-export const sendOTP = (email, number, navigate) => async () => {
+export const sendOTP = (email, number, navigate) => async (dispatch) => {
   try {
+    dispatch(setAuthLoading(true));
+
     await apiConnector("POST", AUTH_ENDPOINTS.SEND_OTP, {
       email,
       number,
@@ -41,6 +42,8 @@ export const sendOTP = (email, number, navigate) => async () => {
     navigate("/verify-otp");
   } catch (error) {
     alert(error?.response?.data?.message || "Failed to send OTP");
+  } finally {
+    dispatch(setAuthLoading(false));
   }
 };
 
@@ -50,6 +53,7 @@ export const sendOTP = (email, number, navigate) => async () => {
 export const signUp = (signupData, navigate) => async (dispatch) => {
   try {
     dispatch(setAuthLoading(true));
+    console.log("Signup data being sent:", signupData);
 
     const response = await apiConnector(
       "POST",
@@ -66,7 +70,6 @@ export const signUp = (signupData, navigate) => async (dispatch) => {
   }
 };
 
-
 /* ======================
    LOGOUT
 ====================== */
@@ -79,7 +82,7 @@ export const logout = (navigate) => async (dispatch) => {
     dispatch(logoutUser());
     dispatch(clearCart());
 
-    navigate("/");
+    navigate("/auth");
   } catch (error) {
     console.error("Logout failed", error);
   } finally {
@@ -94,10 +97,7 @@ export const getCurrentUser = () => async (dispatch) => {
   try {
     dispatch(setAuthLoading(true));
 
-    const response = await apiConnector(
-      "GET",
-      AUTH_ENDPOINTS.GET_CURRENT_USER
-    );
+    const response = await apiConnector("GET", AUTH_ENDPOINTS.GET_CURRENT_USER);
 
     dispatch(setUser(response.user));
   } catch (error) {

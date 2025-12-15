@@ -3,167 +3,192 @@ import { updateSweetService } from "../../Services/sweetManagement/sweetManageme
 import "./UpdateSweetModal.css";
 
 const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
-    
-    // State for image preview: initialized to the current sweet image URL or null
-    const [imagePreview, setImagePreview] = useState(sweet.image || null); 
-    
-    // State to track if the user wants to remove the existing image
-    const [removeImage, setRemoveImage] = useState(false);
-    
-    const [form, setForm] = useState({
-        name: sweet.name || "",
-        category: sweet.category || "",
-        price: sweet.price || "",
-        quantity: sweet.quantity || "",
-        image: null, // Stores the new file object
-    });
+  const [imagePreview, setImagePreview] = useState(sweet.image || null);
+  const [removeImage, setRemoveImage] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: sweet.name || "",
+    category: sweet.category || "",
+    price: sweet.price || "",
+    quantity: sweet.quantity || "",
+    image: null, // Stores the new file object
+  });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
+  const [loading, setLoading] = useState(false);
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        
-        setForm((prev) => ({
-            ...prev,
-            image: file,
-        }));
-        
-        // Show file preview and reset the remove flag
-        if (file) {
-            setImagePreview(URL.createObjectURL(file));
-            setRemoveImage(false); // If a new file is selected, removal is cancelled
-        }
-    };
-    
-    const handleRemoveImageToggle = () => {
-        const newRemoveState = !removeImage;
-        setRemoveImage(newRemoveState);
-        
-        // If enabling removal: clear the new file input and remove the preview
-        if (newRemoveState) {
-            setForm((prev) => ({ ...prev, image: null }));
-            setImagePreview(null); 
-        } 
-        // If disabling removal: restore the original image URL for preview
-        else {
-            setImagePreview(sweet.image || null); 
-        }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    setForm((prev) => ({
+      ...prev,
+      image: file,
+    }));
+
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+      setRemoveImage(false);
     }
+  };
 
-    const handleSubmit = async () => {
-        try {
-            setLoading(true);
+  const handleRemoveImageToggle = () => {
+    const newRemoveState = !removeImage;
+    setRemoveImage(newRemoveState);
 
-            const formData = new FormData();
-            
-            // Append all fields, even if they haven't changed, to ensure data consistency
-            formData.append("name", form.name);
-            formData.append("category", form.category);
-            formData.append("price", form.price);
-            formData.append("quantity", form.quantity);
+    if (newRemoveState) {
+      setForm((prev) => ({ ...prev, image: null }));
+      setImagePreview(null);
+    } else {
+      setImagePreview(sweet.image || null);
+    }
+  };
 
-            // Append new image ONLY if selected
-            if (form.image) {
-                formData.append("image", form.image);
-            }
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
 
-            // Append the removal flag ONLY if it's true
-            // This flag is what your backend controller checks: req.body.remove_image === 'true'
-            if (removeImage) {
-                formData.append("remove_image", true);
-            }
+      const formData = new FormData();
 
-            await updateSweetService(sweet._id, formData);
+      formData.append("name", form.name);
+      formData.append("category", form.category);
+      formData.append("price", form.price);
+      formData.append("quantity", form.quantity);
 
-            refresh(); 
-            onClose(); 
-        } catch (err) {
-            console.error("Update sweet failed", err);
-            // Better error reporting
-            const errorMessage = err?.response?.data?.message || "Failed to update sweet";
-            alert(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
+      if (form.image) {
+        formData.append("image", form.image);
+      }
 
-    return (
-        <div className="update-sweet-overlay">
-            <div className="update-sweet-modal">
-                <h3 className="update-sweet-title">Update Sweet</h3>
+      if (removeImage) {
+        formData.append("remove_image", true);
+      }
 
-                <div className="update-sweet-form">
-                    {/* Input fields */}
-                    <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="Sweet name" />
-                    <input type="text" name="category" value={form.category} onChange={handleChange} placeholder="Category" />
-                    <input type="number" name="price" value={form.price} onChange={handleChange} placeholder="Price" />
-                    <input type="number" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" />
+      await updateSweetService(sweet._id, formData);
 
-                    {/* Image Preview */}
-                    {imagePreview && (
-                        <img 
-                            src={imagePreview} 
-                            alt="Sweet Preview" 
-                            style={{ 
-                                maxWidth: '100px', 
-                                maxHeight: '100px',
-                                objectFit: 'cover',
-                                marginBottom: '10px' 
-                            }} 
-                        />
-                    )}
-                    
-                    {/* File Input */}
-                    <input 
-                        type="file" 
-                        onChange={handleImageChange} 
-                        // Key trick resets the input when removeImage changes, clearing the file name
-                        key={removeImage ? 'removed' : 'active'}
-                        disabled={removeImage}
-                    />
+      refresh();
+      onClose();
+    } catch (err) {
+      console.error("Update sweet failed", err);
+      const errorMessage =
+        err?.response?.data?.message || "Failed to update sweet";
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                    {/* Small Checkbox for Removal */}
-                    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center' }}>
-                        <input 
-                            id="remove-image-checkbox"
-                            type="checkbox" 
-                            checked={removeImage} 
-                            onChange={handleRemoveImageToggle}
-                            style={{ marginRight: '5px' }} 
-                        />
-                        <label 
-                            htmlFor="remove-image-checkbox" 
-                            style={{ fontSize: '14px', color: '#555' }} 
-                        >
-                            Remove current image
-                        </label>
-                    </div>
-                </div>
+  return (
+    <div className="update-sweet-overlay">
+      <div className="update-sweet-modal">
+        <h3 className="update-sweet-title">Update Sweet: {sweet.name}</h3>{" "}
+        {/* Added sweet name for clarity */}
+        {/* Using a form tag for proper submission handling */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          className="update-sweet-form"
+        >
+          {/* Input fields */}
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Sweet name"
+            required
+          />
+          <input
+            type="text"
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            placeholder="Category"
+          />
+          <input
+            type="number"
+            name="price"
+            value={form.price}
+            onChange={handleChange}
+            placeholder="Price"
+            required
+            min="1"
+          />
+          <input
+            type="number"
+            name="quantity"
+            value={form.quantity}
+            onChange={handleChange}
+            placeholder="Quantity"
+            required
+            min="0"
+          />
 
-                <div className="update-sweet-actions">
-                    <button 
-                        className="update-btn-cancel" 
-                        onClick={onClose} 
-                        disabled={loading}
-                    >
-                        Cancel
-                    </button>
-                    <button 
-                        className="update-btn-save" 
-                        onClick={handleSubmit} 
-                        disabled={loading}
-                    >
-                        {loading ? "Updating..." : "Update"}
-                    </button>
-                </div>
+          {/* Image Management Group */}
+          <div className="image-management-group">
+            {/* 1. Preview */}
+            {imagePreview && (
+              <div className="image-preview-wrapper">
+                <img
+                  src={imagePreview}
+                  alt="Sweet Preview"
+                  className="image-preview"
+                />
+              </div>
+            )}
+
+            {/* 2. File Input */}
+            <div className="file-input-group">
+              <label className="file-label">New Product Image (Optional)</label>
+              <input
+                type="file"
+                onChange={handleImageChange}
+                key={removeImage ? "removed" : "active"}
+                disabled={removeImage}
+                className="file-input"
+              />
             </div>
-        </div>
-    );
+
+            {/* 3. Removal Checkbox */}
+            <div className="remove-image-checkbox-group">
+              <input
+                id="remove-image-checkbox"
+                type="checkbox"
+                checked={removeImage}
+                onChange={handleRemoveImageToggle}
+              />
+              <label htmlFor="remove-image-checkbox">
+                Remove current image
+              </label>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="update-sweet-actions">
+            <button
+              type="button"
+              className="update-btn-cancel"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="update-btn-save"
+              disabled={loading}
+            >
+              {loading ? "Updating..." : "Update Sweet"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default UpdateSweetModal;

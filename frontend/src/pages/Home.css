@@ -1,35 +1,91 @@
-.home {
+/*
+ * Theme Colors:
+ * Primary Accent: #A82245 (Deep Raspberry)
+ * Background: #F9F9F9 (Light Cream)
+ * Text: #333333 (Dark Charcoal)
+ * Secondary Accent: #FFC640 (Rich Honey)
+*/
+
+.home-page {
+  /* Use the light cream background */
+  background-color: #f9f9f9;
+  /* Use a consistent, generous horizontal padding */
+  padding: 40px 60px;
+  /* Ensure the content area spans the full height */
   min-height: calc(100vh - 64px);
-  padding: 24px;
-  background: #f9fafb;
 }
 
-/* Header */
-.home-header {
-  margin-bottom: 24px;
+/* Header/Title Area */
+.home-page__title-area {
+  margin-bottom: 40px; /* More generous vertical space */
+  border-bottom: 2px solid #e0e0e0; /* Subtle separator line */
+  padding-bottom: 10px;
 }
 
-.home-header h1 {
-  font-size: 1.8rem;
+.home-page__title-area h1 {
+  /* Use the dark charcoal for strong contrast */
+  color: #333333;
+  /* Set a sophisticated heading font (replace with actual font family if loaded) */
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #111827;
+  /* Letter spacing adds an elegant touch */
+  letter-spacing: 0.5px;
 }
 
 /* Loader */
 .loader {
   text-align: center;
-  font-size: 1rem;
-  color: #6b7280;
-  margin-top: 40px;
+  /* Primary accent color for attention */
+  color: #a82245;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 80px 0;
+  /* Smooth animation if you add a spinning icon */
+  transition: all 0.3s ease-in-out;
 }
 
-/* Responsive spacing */
+/* Empty State Message (for when no sweets are found) */
+.home-page__empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  background: #ffffff;
+  border: 1px dashed #e0e0e0;
+  border-radius: 8px;
+  margin: 40px auto;
+  max-width: 600px;
+}
+
+.home-page__empty-state h2 {
+  color: #a82245; /* Deep Raspberry */
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.home-page__empty-state p {
+  color: #666666;
+  font-size: 1rem;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1024px) {
+  .home-page {
+    /* Reduce side padding on medium screens */
+    padding: 30px 40px;
+  }
+}
+
 @media (max-width: 768px) {
-  .home {
-    padding: 16px;
+  .home-page {
+    /* Further reduce padding on mobile */
+    padding: 20px 15px;
   }
 
-  .home-header h1 {
-    font-size: 1.4rem;
+  .home-page__title-area {
+    margin-bottom: 30px;
+  }
+
+  .home-page__title-area h1 {
+    font-size: 2rem;
   }
 }

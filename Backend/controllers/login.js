@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-
 exports.logIn = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -23,6 +22,8 @@ exports.logIn = async (req, res) => {
       });
     }
 
+    console.log("User found:", user);
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -37,17 +38,13 @@ exports.logIn = async (req, res) => {
       email: user.email,
     };
 
-    const accessToken = jwt.sign(
-      payload,
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
-    );
+    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "15m",
+    });
 
-    const refreshToken = jwt.sign(
-      payload,
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "7d" }
-    );
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "7d",
+    });
 
     // Save refresh token in DB
     user.refreshToken = refreshToken;
@@ -75,7 +72,7 @@ exports.logIn = async (req, res) => {
           _id: user._id,
           email: user.email,
           role: user.role,
-          name: user.name,
+          name: user.fullName,
         },
         message: "Login successful",
       });
@@ -87,8 +84,6 @@ exports.logIn = async (req, res) => {
     });
   }
 };
-
-
 
 exports.refreshToken = async (req, res) => {
   try {
@@ -152,7 +147,6 @@ exports.refreshToken = async (req, res) => {
   }
 };
 
-
 exports.getUser = async (req, res) => {
   try {
     const user = req.user;
@@ -164,18 +158,16 @@ exports.getUser = async (req, res) => {
       });
     }
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        user: {
-          _id: user._id,
-          email: user.email,
-          role: user.role,
-          name: user.name,
-        },
-        message: "User Found",
-      });
+    res.status(200).json({
+      success: true,
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        name: user.fullName,
+      },
+      message: "User Found",
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -183,7 +175,6 @@ exports.getUser = async (req, res) => {
     });
   }
 };
-
 
 exports.logout = async (req, res) => {
   try {
@@ -206,7 +197,3 @@ exports.logout = async (req, res) => {
     });
   }
 };
-
-
-
-
