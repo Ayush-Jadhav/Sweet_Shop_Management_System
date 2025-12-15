@@ -5,6 +5,7 @@ import {
 } from "../Services/sweetManagement/sweetManagementService";
 import AdminSweetCard from "../components/admin/AdminSweetCard";
 import AddSweetModal from "../components/admin/AddSweetModal";
+import "./AdminSweetManagement.css"
 
 const AdminSweetManagement = () => {
   const [sweets, setSweets] = useState([]);
@@ -27,36 +28,41 @@ const AdminSweetManagement = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Sweet Inventory</h2>
+    <div className="admin-sweet-page">
+  <div className="admin-sweet-header">
+    <h2 className="admin-sweet-title">Sweet Inventory</h2>
 
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-green-600 text-white px-4 py-2 rounded"
-        >
-          + Add Sweet
-        </button>
-      </div>
+    <button
+      onClick={() => setShowModal(true)}
+      className="add-sweet-btn"
+    >
+      + Add Sweet
+    </button>
+  </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {sweets.map((sweet) => (
-          <AdminSweetCard
-            key={sweet._id}
-            sweet={sweet}
-            onDelete={handleDelete}
-            refresh={loadSweets}
-          />
-        ))}
-      </div>
-
-      {showModal && (
-        <AddSweetModal
-          onClose={() => setShowModal(false)}
+  {sweets.length === 0 ? (
+    <p className="admin-empty">No sweets available</p>
+  ) : (
+    <div className="admin-sweet-grid">
+      {sweets.map((sweet) => (
+        <AdminSweetCard
+          key={sweet._id}
+          sweet={sweet}
+          onDelete={handleDelete}
           refresh={loadSweets}
         />
-      )}
+      ))}
     </div>
+  )}
+
+  {showModal && (
+    <AddSweetModal
+      onClose={() => setShowModal(false)}
+      refresh={loadSweets}
+    />
+  )}
+</div>
+
   );
 };
 

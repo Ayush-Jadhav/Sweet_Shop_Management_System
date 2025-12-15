@@ -153,13 +153,41 @@ exports.refreshToken = async (req, res) => {
 };
 
 
+exports.getUser = async (req, res) => {
+  try {
+    const user = req.user;
 
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Not found",
+      });
+    }
 
+    res
+      .status(200)
+      .json({
+        success: true,
+        user: {
+          _id: user._id,
+          email: user.email,
+          role: user.role,
+          name: user.name,
+        },
+        message: "User Found",
+      });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 
 exports.logout = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user._id;
 
     await User.findByIdAndUpdate(userId, { refreshToken: null });
 
@@ -178,3 +206,7 @@ exports.logout = async (req, res) => {
     });
   }
 };
+
+
+
+

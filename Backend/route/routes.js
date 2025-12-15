@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 
 /* ===================== AUTH CONTROLLERS ===================== */
-const { logIn, refreshToken, logout } = require("../controllers/login");
+const { logIn, refreshToken, logout, getUser } = require("../controllers/login");
 const { signUp, sendOTP } = require("../controllers/register");
 const { authenticateUser, isAdmin } = require("../middleware/auth");
 
@@ -24,7 +24,8 @@ Router.post("/auth/login", logIn);
 Router.post("/auth/register", signUp);
 Router.post("/auth/emailVerify", sendOTP);
 Router.post("/auth/refresh", refreshToken);
-Router.post("/auth/logout",logout);
+Router.post("/auth/logout", authenticateUser, logout);
+Router.get("/auth/findUser", authenticateUser, getUser);
 
 /* ===================== ORDER ROUTES ===================== */
 // Create order

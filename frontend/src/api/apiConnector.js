@@ -1,12 +1,85 @@
 import axios from "axios";
+import { AUTH_ENDPOINTS } from "../Services/apiEndpoints";
 
 /* ===========================
    Axios Instance
 =========================== */
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // e.g. http://localhost:4000/api
-  withCredentials: true, 
+  baseURL: import.meta.env.VITE_API_BASE_URL, // http://localhost:4000/api
+  withCredentials: true, // 🔥 cookies required
 });
+
+/* ===========================
+   Refresh Token Handling
+=========================== */
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error = null) => {
+  failedQueue.forEach(({ resolve, reject, config }) => {
+    if (error) reject(error);
+    else resolve(axiosInstance(config));
+  });
+  failedQueue = [];
+};
+
+/* ===========================
+   RESPONSE INTERCEPTOR
+=========================== */
+axiosInstance.interceptors.response.use(
+  (response) => response,
+
+  async (error) => {
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+
+    const originalRequest = error.config;
+
+    // Only handle expired access token
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh")
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve,
+            reject,
+            config: originalRequest,
+          });
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        await axiosInstance.post(
+          AUTH_ENDPOINTS.REFRESH_TOKEN,
+          {},
+          { withCredentials: true }
+        );
+
+        processQueue();
+        return axiosInstance(originalRequest);
+      } catch (err) {
+        processQueue(err);
+
+        if (window.location.pathname !== "/auth") {
+          window.location.href = "/auth";
+        }
+
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 /* ===========================
    Generic API Connector
@@ -29,7 +102,6 @@ export const apiConnector = async (
 
     return response.data;
   } catch (error) {
-    // Centralized error handling
     throw (
       error?.response?.data || {
         success: false,

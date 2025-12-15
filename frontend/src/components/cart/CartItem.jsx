@@ -31,11 +31,7 @@ const CartItem = ({ item }) => {
           className="qty-btn"
           onClick={() =>
             dispatch(
-              addToCart({
-                sweetId: item._id,
-                name: item.name,
-                price: item.price,
-              })
+              addToCart(item)
             )
           }
         >

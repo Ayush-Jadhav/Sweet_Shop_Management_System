@@ -10,7 +10,7 @@ export const AUTH_ENDPOINTS = {
   LOGIN: `${BASE_URL}/auth/login`,
   LOGOUT: `${BASE_URL}/auth/logout`,
   REFRESH_TOKEN: `${BASE_URL}/auth/refresh`,
-  GET_CURRENT_USER: `${BASE_URL}/auth/me`,
+  GET_CURRENT_USER: `${BASE_URL}/auth/findUser`,
 };
 
 /* ===========================

@@ -6,6 +6,7 @@ import OrderDetails from "./pages/OrderDetails";
 import AdminSweetManagement from "./pages/AdminSweetManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthPage from "./pages/AuthPage";
+import VerifyOtp from "./components/auth/VerifyOtp";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         {/* Public */}
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/verify-otp" element={<VerifyOtp />}/>
 
         {/* User */}
         <Route

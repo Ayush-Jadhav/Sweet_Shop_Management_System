@@ -23,6 +23,13 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+// middleware for deal with file-upload
+const fileUpload = require("express-fileupload");
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+}));
+
 // Routes
 const route = require("./route/routes");
 app.use("/api", route);

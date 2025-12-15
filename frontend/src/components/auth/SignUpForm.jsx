@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { sendOTP } from "../../Services/auth/authService";
 import { setSignupData } from "../../redux/slice/authSlice";
@@ -11,10 +11,10 @@ const SignUpForm = () => {
 
   const [visiblePass, setVisiblePass] = useState(false);
   const [visibleConfirmPass, setVisibleConfirmPass] = useState(false);
+  const { loading } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     number: "",
     role: "user", 
@@ -37,7 +37,7 @@ const handleSubmit = (e) => {
     return;
   }
 
-  dispatch(setSignupData(formData));   // store temp data
+  dispatch(setSignupData(formData)); 
   dispatch(sendOTP(formData.email, formData.number, navigate));
 };
 
@@ -45,20 +45,10 @@ const handleSubmit = (e) => {
     <form className="signUpForm signup-scroll" onSubmit={handleSubmit}>
 
       <div className="formGroup">
-        <label>First Name</label>
+        <label>Name</label>
         <input
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="formGroup">
-        <label>Last Name</label>
-        <input
-          name="lastName"
-          value={formData.lastName}
+          name="fullName"
+          value={formData.fullName}
           onChange={handleChange}
           required
         />
@@ -108,7 +98,7 @@ const handleSubmit = (e) => {
             onChange={handleChange}
             required
           />
-          <span onClick={() => setVisiblePass(!visiblePass)}>
+          <span type="button" onClick={() => setVisiblePass(!visiblePass)}>
             {visiblePass ? <BiSolidHide /> : <BiSolidShow />}
           </span>
         </div>
@@ -124,14 +114,14 @@ const handleSubmit = (e) => {
             onChange={handleChange}
             required
           />
-          <span onClick={() => setVisibleConfirmPass(!visibleConfirmPass)}>
+          <span type="button" onClick={() => setVisibleConfirmPass(!visibleConfirmPass)}>
             {visibleConfirmPass ? <BiSolidHide /> : <BiSolidShow />}
           </span>
         </div>
       </div>
 
-      <button type="submit" className="authButton">
-        Sign Up
+      <button type="submit" className="authButton" disabled={loading}>
+        {loading ? "Sending OTP..." : "Sign Up" }
       </button>
     </form>
   );

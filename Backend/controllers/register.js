@@ -45,11 +45,11 @@ exports.sendOTP = async (req, res) => {
 exports.signUp = async (req, res) => {
   try {
     // fetch data fromm req
-    const { name, email, number, role, password, confirmPassword, otp } =
+    const { fullName, email, number, role, password, confirmPassword, otp } =
       req.body;
 
     // validate data
-    if (!name || !email || !number || !password || !confirmPassword || !otp) {
+    if (!fullName || !email || !number || !password || !confirmPassword || !otp) {
       return res.status(400).json({
         success: false,
         message: "All required fields must be provided.",
@@ -67,8 +67,6 @@ exports.signUp = async (req, res) => {
     // verify otp
     const otpInDB = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
     const originalOTP = otpInDB[0]?.otp;
-    console.log("otpInDB", originalOTP);
-    console.log("otp", otp);
 
     // Check if an OTP exists in the database
     if (!originalOTP) {
@@ -107,7 +105,7 @@ exports.signUp = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
-      name,
+      fullName,
       email,
       number,
       role,

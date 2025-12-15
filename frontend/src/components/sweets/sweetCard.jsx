@@ -6,7 +6,7 @@ const SweetCard = ({ sweet }) => {
   const dispatch = useDispatch();
 
   const outOfStock = sweet.quantity === 0;
-
+  
   return (
     <div className="sweet-card">
       <div className="sweet-image-wrapper">

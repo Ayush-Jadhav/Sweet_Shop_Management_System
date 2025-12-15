@@ -1,45 +1,49 @@
 import UpdateSweetModal from "./UpdateSweetModal";
 import { useState } from "react";
+import "./AdminSweetCard.css";
 
 const AdminSweetCard = ({ sweet, onDelete, refresh }) => {
   const [edit, setEdit] = useState(false);
 
   return (
-    <div className="border rounded p-3 shadow">
-      <img
-        src={sweet.image}
-        alt={sweet.name}
-        className="h-40 w-full object-cover rounded"
-      />
+    <div className="admin-sweet-card">
+  <img
+    src={sweet.image}
+    alt={sweet.name}
+    className="admin-sweet-image"
+  />
 
-      <h3 className="font-semibold mt-2">{sweet.name}</h3>
-      <p>₹{sweet.price}</p>
-      <p>Stock: {sweet.quantity}</p>
+  <div className="admin-sweet-content">
+    <h3 className="admin-sweet-name">{sweet.name}</h3>
+    <p className="admin-sweet-price">₹{sweet.price}</p>
+    <p className="admin-sweet-stock">Stock: {sweet.quantity}</p>
+  </div>
 
-      <div className="flex gap-2 mt-3">
-        <button
-          onClick={() => setEdit(true)}
-          className="bg-blue-500 text-white px-3 py-1 rounded"
-        >
-          Edit
-        </button>
+  <div className="admin-sweet-actions">
+    <button
+      onClick={() => setEdit(true)}
+      className="admin-btn edit"
+    >
+      Edit
+    </button>
 
-        <button
-          onClick={() => onDelete(sweet._id)}
-          className="bg-red-500 text-white px-3 py-1 rounded"
-        >
-          Delete
-        </button>
-      </div>
+    <button
+      onClick={() => onDelete(sweet._id)}
+      className="admin-btn delete"
+    >
+      Delete
+    </button>
+  </div>
 
-      {edit && (
-        <UpdateSweetModal
-          sweet={sweet}
-          onClose={() => setEdit(false)}
-          refresh={refresh}
-        />
-      )}
-    </div>
+  {edit && (
+    <UpdateSweetModal
+      sweet={sweet}
+      onClose={() => setEdit(false)}
+      refresh={refresh}
+    />
+  )}
+</div>
+
   );
 };
 

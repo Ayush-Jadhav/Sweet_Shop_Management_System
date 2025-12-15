@@ -5,30 +5,29 @@ import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { signUp, sendOTP } from '../Services/auth/authService';
+import { signUp, sendOTP } from '../../Services/auth/authService';
 
 const VerifyEmail = () => {
   const [otp, setOtp] = useState('');
-  const {loading, signUpData} = useSelector((state)=> state.auth);
+  const {loading, signupData} = useSelector((state)=> state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(!signUpData) navigate('/SignUp');
-  }, [signUpData, navigate]);
+    if(!signupData) navigate('/auth');
+  }, [signupData, navigate]);
 
   const handleVerifyAndSignup = (e) => {
     e.preventDefault();
     const {
-      firstName,
-      lastName,
+      fullName,
       email,
       number,
       password,
       confirmPassword,
-    } = signUpData;
+    } = signupData;
 
-    dispatch(signUp({firstName, lastName, email, number, password, confirmPassword, otp}, navigate));
+    dispatch(signUp({fullName, email, number, password, confirmPassword, otp}, navigate));
   }
 
   return (
@@ -51,22 +50,23 @@ const VerifyEmail = () => {
               renderInput={(props) => (
                 <input
                   {...props}
-                  placeholder="-"
+                  placeholder=""
                   className="otp-input"
                 />
               )}
               containerStyle="otp-container"
             />
-            <button type="submit" className="verify-button">
-              Verify Email
+            <button type="submit" className="verify-button" disabled={loading}>
+              {loading ? "Verifying..." : "Verify Email"}
             </button>
           </form>
           <div className="links">
-            <Link to="/signup" className="back-to-signup">
+            <Link to="/auth" className="back-to-signup">
               <p><BiArrowBack /> Back To Signup</p>
             </Link>
             <button
-              onClick={() => dispatch(sendOTP(signUpData.email))}
+              type="button"
+              onClick={() => dispatch(sendOTP(signupData.email))}
               className="resend-button"
             >
               <RxCountdownTimer />

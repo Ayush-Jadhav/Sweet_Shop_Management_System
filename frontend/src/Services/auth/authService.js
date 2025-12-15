@@ -57,10 +57,10 @@ export const signUp = (signupData, navigate) => async (dispatch) => {
       signupData
     );
 
-    dispatch(setUser(response.data.user));
+    dispatch(setUser(response.user));
     navigate("/");
   } catch (error) {
-    alert(error?.response?.data?.message || "Signup failed");
+    alert(error?.response?.message || "Signup failed");
   } finally {
     dispatch(setAuthLoading(false));
   }
@@ -79,7 +79,7 @@ export const logout = (navigate) => async (dispatch) => {
     dispatch(logoutUser());
     dispatch(clearCart());
 
-    navigate("/login");
+    navigate("/");
   } catch (error) {
     console.error("Logout failed", error);
   } finally {
@@ -99,7 +99,7 @@ export const getCurrentUser = () => async (dispatch) => {
       AUTH_ENDPOINTS.GET_CURRENT_USER
     );
 
-    dispatch(setUser(response.data.user));
+    dispatch(setUser(response.user));
   } catch (error) {
     // Silent fail → user not logged in
     dispatch(logoutUser());

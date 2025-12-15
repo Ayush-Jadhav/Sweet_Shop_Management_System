@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
-import Signup from "../pages/Signup";
+import AuthPage from "../pages/AuthPage"
 import OrderHistory from "../pages/OrderHistory";
 import OrderDetails from "../pages/OrderDetails";
 import AdminSweetManagement from "../pages/admin/AdminSweetManagement";
@@ -13,8 +12,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Home />} />
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      <Route path="/auth" element={<AuthPage />} />
 
       <Route
         path="/orders"

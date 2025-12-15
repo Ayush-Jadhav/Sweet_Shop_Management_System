@@ -11,18 +11,30 @@ const DEFAULT_SWEET_IMAGE = process.env.DEFAULT_SWEET_IMAGE;
 exports.createSweet = async (req, res) => {
   const session = await mongoose.startSession();
   let imageUrl = DEFAULT_SWEET_IMAGE;
+  console.log(imageUrl);
 
   try {
+    session.startTransaction();
+
     const { name, category, price, quantity } = req.body;
 
-    if (!name || !category || price == null || quantity == null) {
+    // Convert price & quantity (FormData sends strings)
+    const parsedPrice = Number(price);
+    const parsedQuantity = Number(quantity);
+
+    console.log(name, category, price, quantity);
+
+    if (
+      !name ||
+      !category ||
+      Number.isNaN(parsedPrice) ||
+      Number.isNaN(parsedQuantity)
+    ) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message: "All fields are required and must be valid",
       });
     }
-
-    session.startTransaction();
 
     // Upload image only if provided
     if (req.files && req.files.image) {
@@ -38,8 +50,8 @@ exports.createSweet = async (req, res) => {
         {
           name,
           category,
-          price,
-          quantity,
+          price: parsedPrice,
+          quantity: parsedQuantity,
           image: imageUrl,
         },
       ],
@@ -47,7 +59,6 @@ exports.createSweet = async (req, res) => {
     );
 
     await session.commitTransaction();
-    session.endSession();
 
     return res.status(201).json({
       success: true,
@@ -56,7 +67,6 @@ exports.createSweet = async (req, res) => {
     });
   } catch (error) {
     await session.abortTransaction();
-    session.endSession();
 
     // Rollback uploaded image if DB fails
     if (imageUrl && imageUrl !== DEFAULT_SWEET_IMAGE) {
@@ -64,10 +74,13 @@ exports.createSweet = async (req, res) => {
     }
 
     console.error("Create sweet error:", error);
+
     return res.status(500).json({
       success: false,
       message: "Failed to create sweet",
     });
+  } finally {
+    session.endSession();
   }
 };
 
@@ -139,16 +152,38 @@ exports.getSweetsByPage = async (req, res) => {
 exports.searchSweets = async (req, res) => {
   try {
     const { name, category, minPrice, maxPrice } = req.query;
+
+    const filters = [];
+
+    // Keyword search (name OR category)
+    if (name) {
+      filters.push(
+        { name: { $regex: name, $options: "i" } },
+        { category: { $regex: name, $options: "i" } }
+      );
+    }
+
+    // Explicit category filter
+    if (category) {
+      filters.push({
+        category: { $regex: category, $options: "i" },
+      });
+    }
+
     const query = {};
 
-    if (name) query.name = { $regex: name, $options: "i" };
-    if (category) query.category = { $regex: category, $options: "i" };
+    if (filters.length > 0) {
+      query.$or = filters;
+    }
 
+    // Price filter
     if (minPrice || maxPrice) {
       query.price = {};
       if (minPrice) query.price.$gte = Number(minPrice);
       if (maxPrice) query.price.$lte = Number(maxPrice);
     }
+
+    console.log("Final Mongo Query:", query);
 
     const sweets = await Sweet.find(query);
 
@@ -166,81 +201,107 @@ exports.searchSweets = async (req, res) => {
   }
 };
 
+
 /**
  * PUT /api/sweets/:id
  */
 exports.updateSweet = async (req, res) => {
-  const session = await mongoose.startSession();
-  let newImageUrl = null;
+    const session = await mongoose.startSession();
+    let newImageUrl = null;
+    let oldSweetImageUrl = null; // Store the original image URL for rollback
 
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    session.startTransaction();
+        // 1. Convert numerical fields from string (FormData/req.body sends strings)
+        // If the fields are not present, they remain undefined.
+        const parsedPrice = req.body.price !== undefined ? Number(req.body.price) : undefined;
+        const parsedQuantity = req.body.quantity !== undefined ? Number(req.body.quantity) : undefined;
 
-    const sweet = await Sweet.findById(id).session(session);
-    if (!sweet) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(404).json({
-        success: false,
-        message: "Sweet not found",
-      });
+        // Basic Validation
+        if (req.body.price !== undefined && Number.isNaN(parsedPrice)) {
+             return res.status(400).json({ success: false, message: "Price must be a valid number" });
+        }
+        if (req.body.quantity !== undefined && Number.isNaN(parsedQuantity)) {
+             return res.status(400).json({ success: false, message: "Quantity must be a valid number" });
+        }
+
+        session.startTransaction();
+
+        const sweet = await Sweet.findById(id).session(session);
+        if (!sweet) {
+            await session.abortTransaction();
+            return res.status(404).json({ success: false, message: "Sweet not found" });
+        }
+        
+        oldSweetImageUrl = sweet.image; // Save for safety in case of DB failure later
+
+        // 2. IMAGE UPDATE LOGIC
+        // =================================================================
+        if (req.files && req.files.image) {
+            // A. New image is uploaded: Upload new image and delete old one concurrently
+            const uploadPromise = uploadFile({
+                file: req.files.image,
+                folderName: "sweets",
+            });
+
+            // Delete old image ONLY if it's not the default image
+            const deletePromise =
+                sweet.image && sweet.image !== DEFAULT_SWEET_IMAGE
+                    ? deleteFile(sweet.image)
+                    : Promise.resolve();
+
+            const [uploadedUrl] = await Promise.all([uploadPromise, deletePromise]);
+
+            newImageUrl = uploadedUrl;
+            sweet.image = newImageUrl; // Set the new URL
+            
+        } else if (req.body.remove_image === 'true' && sweet.image !== DEFAULT_SWEET_IMAGE) {
+            // B. User explicitly requested to remove the image (e.g., a checkbox in the form)
+            await deleteFile(sweet.image).catch(() => {});
+            sweet.image = DEFAULT_SWEET_IMAGE;
+        } 
+        // C. No image sent and no remove_image flag means sweet.image remains unchanged.
+        // =================================================================
+
+        // 3. UPDATE OTHER FIELDS
+        // Update fields only if they are present in the request body
+        if (req.body.name !== undefined) sweet.name = req.body.name;
+        if (req.body.category !== undefined) sweet.category = req.body.category;
+        
+        // Use the parsed numerical values
+        if (parsedPrice !== undefined) sweet.price = parsedPrice;
+        if (parsedQuantity !== undefined) sweet.quantity = parsedQuantity;
+
+        // 4. Save and Finish
+        const updatedSweet = await sweet.save({ session });
+
+        await session.commitTransaction();
+
+        return res.status(200).json({
+            success: true,
+            sweet: updatedSweet,
+            message: "Sweet updated successfully",
+        });
+
+    } catch (error) {
+        await session.abortTransaction();
+
+        // 5. ROLLBACK LOGIC
+        // If a new image was uploaded successfully but the DB save failed, delete the new image.
+        if (newImageUrl) {
+            await deleteFile(newImageUrl).catch(() => {});
+        }
+
+        console.error("Update sweet error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update sweet",
+        });
+    } finally {
+        session.endSession();
     }
-
-    // Image update (concurrent delete + upload)
-    if (req.files && req.files.image) {
-      const uploadPromise = uploadFile({
-        file: req.files.image,
-        folderName: "sweets",
-        quality: "auto:good",
-      });
-
-      const deletePromise =
-        sweet.image && sweet.image !== DEFAULT_SWEET_IMAGE
-          ? deleteFile(sweet.image)
-          : Promise.resolve();
-
-      const [uploadedUrl] = await Promise.all([uploadPromise, deletePromise]);
-
-      newImageUrl = uploadedUrl;
-      sweet.image = newImageUrl;
-    }
-
-    // Update fields
-    ["name", "category", "price", "quantity"].forEach((field) => {
-      if (req.body[field] !== undefined) {
-        sweet[field] = req.body[field];
-      }
-    });
-
-    await sweet.save({ session });
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return res.status(200).json({
-      success: true,
-      sweet,
-      message: "Sweet updated successfully",
-    });
-  } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-
-    if (newImageUrl) {
-      await deleteFile(newImageUrl).catch(() => {});
-    }
-
-    console.error("Update sweet error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to update sweet",
-    });
-  }
-};
-
-/**
+};/**
  * DELETE /api/sweets/:id
  */
 exports.deleteSweet = async (req, res) => {
