@@ -82,10 +82,10 @@ const OrderDetails = () => {
                 <li key={item._id} className="order-item">
                   <span className="order-item-name">{item.sweetId.name}</span>
                   <span className="order-item-qty-price">
-                    {item.quantity} × ₹{item.price}
+                    {item.quantity} × ₹{item.sweetId.price}
                   </span>
                   <span className="order-item-line-total">
-                    ₹{item.quantity * item.price}
+                    ₹{item.quantity * item.sweetId.price}
                   </span>
                 </li>
               )

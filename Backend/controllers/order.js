@@ -82,7 +82,6 @@ exports.getMyOrders = async (req, res) => {
   }
 };
 
-
 /**
  * GET ORDER DETAILS
  * GET /api/orders/:id
@@ -93,16 +92,12 @@ exports.getOrderDetails = async (req, res) => {
     const userId = req.user._id;
     const userRole = req.user.role;
 
-    // Redis cache lookup
+    // Redis lookup
     const cachedOrder = await redisClient.get(`order:${id}`);
     if (cachedOrder) {
-      const parsedOrder = JSON.parse(cachedOrder);
+      const order = JSON.parse(cachedOrder);
 
-      // Authorization check
-      if (
-        parsedOrder.userId.toString() !== userId.toString() &&
-        userRole !== "admin"
-      ) {
+      if (order.userId !== userId.toString() && userRole !== "admin") {
         return res.status(403).json({
           success: false,
           message: "Access denied",
@@ -111,11 +106,17 @@ exports.getOrderDetails = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        order: parsedOrder,
+        order,
       });
     }
 
-    const order = await Order.findOne({ orderId: id });
+    // DB query with populate
+    const order = await Order.findOne({ orderId: id })
+      .populate({
+        path: "items.sweetId",
+        select: "name price", // only required fields
+      })
+      .lean();
 
     if (!order) {
       return res.status(404).json({
@@ -124,8 +125,6 @@ exports.getOrderDetails = async (req, res) => {
       });
     }
 
-    
-     //Authorization check
     if (order.userId.toString() !== userId.toString() && userRole !== "admin") {
       return res.status(403).json({
         success: false,
@@ -133,8 +132,7 @@ exports.getOrderDetails = async (req, res) => {
       });
     }
 
-    
-    // Cache result (10 minutes)
+    // Cache populated order
     await redisClient.setEx(`order:${id}`, 600, JSON.stringify(order));
 
     return res.status(200).json({
