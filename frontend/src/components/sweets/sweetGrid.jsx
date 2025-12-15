@@ -1,4 +1,4 @@
-import SweetCard from "./SweetCard";
+import SweetCard from "./sweetCard";
 import "./sweetGrid.css";
 
 const SweetGrid = ({ sweets }) => {
