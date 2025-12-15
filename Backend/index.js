@@ -9,15 +9,26 @@ const app = express();
 const connectWithDB = require("./config/connectDB");
 connectWithDB();
 
+const allowedOrigins = [
+  "https://sweet-shop-management-system-one-mu.vercel.app",
+  "https://sweet-shop-management-system-ayush-jadhavs-projects-325ccd82.vercel.app",
+  "http://localhost:3000",
+];
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log("CORS blocked request from origin:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 200,
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
 // Middlewares
 app.use(express.json());
@@ -25,10 +36,12 @@ app.use(cookieParser());
 
 // middleware for deal with file-upload
 const fileUpload = require("express-fileupload");
-app.use(fileUpload({
+app.use(
+  fileUpload({
     useTempFiles: true,
-    tempFileDir: '/tmp/',
-}));
+    tempFileDir: "/tmp/",
+  })
+);
 
 // Routes
 const route = require("./route/routes");
