@@ -40,7 +40,7 @@ const Navbar = () => {
     <nav className="navbar">
       {/* Logo */}
       <Link to="/" className="navbar-logo">
-        Apki Sweets
+        Shop Management
       </Link>
 
       {/* Search */}

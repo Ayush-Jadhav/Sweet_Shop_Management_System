@@ -52,7 +52,7 @@ exports.logIn = async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "None",
     };
 
@@ -127,7 +127,7 @@ exports.refreshToken = async (req, res) => {
 
         res.cookie("accessToken", newAccessToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
+          secure: true,
           sameSite: "None",
           maxAge: 15 * 60 * 1000,
         });
@@ -182,16 +182,24 @@ exports.logout = async (req, res) => {
 
     await User.findByIdAndUpdate(userId, { refreshToken: null });
 
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      path: "/",
+    };
+
     res
-      .clearCookie("accessToken")
-      .clearCookie("refreshToken")
+      .clearCookie("accessToken", cookieOptions)
+      .clearCookie("refreshToken", cookieOptions)
       .status(200)
       .json({
         success: true,
         message: "Logged out successfully",
       });
   } catch (error) {
-    return res.status(500).json({
+    console.error("Logout error:", error);
+    res.status(500).json({
       success: false,
       message: "Logout failed",
     });
