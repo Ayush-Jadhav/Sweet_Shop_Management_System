@@ -6,6 +6,7 @@ import {
   setAuthLoading,
 } from "../../redux/slice/authSlice";
 import { clearCart } from "../../redux/slice/cartSlice";
+import { toast } from "react-toastify";
 
 /* ======================
    LOGIN
@@ -16,12 +17,12 @@ export const logIn = (formData, navigate) => async (dispatch) => {
 
     const response = await apiConnector("POST", AUTH_ENDPOINTS.LOGIN, formData);
 
-    // backend sends userInfo
     dispatch(setUser(response.user));
+    toast.success("Login successful");
 
     navigate("/");
   } catch (error) {
-    alert(error?.response?.message || "Login failed");
+    toast.error(error?.response?.data?.message || "Login failed");
   } finally {
     dispatch(setAuthLoading(false));
   }
@@ -39,9 +40,10 @@ export const sendOTP = (email, number, navigate) => async (dispatch) => {
       number,
     });
 
+    toast.success("OTP sent to your email");
     navigate("/verify-otp");
   } catch (error) {
-    alert(error?.response?.data?.message || "Failed to send OTP");
+    toast.error(error?.response?.data?.message || "Failed to send OTP");
   } finally {
     dispatch(setAuthLoading(false));
   }
@@ -53,7 +55,6 @@ export const sendOTP = (email, number, navigate) => async (dispatch) => {
 export const signUp = (signupData, navigate) => async (dispatch) => {
   try {
     dispatch(setAuthLoading(true));
-    console.log("Signup data being sent:", signupData);
 
     const response = await apiConnector(
       "POST",
@@ -62,9 +63,11 @@ export const signUp = (signupData, navigate) => async (dispatch) => {
     );
 
     dispatch(setUser(response.user));
+    toast.success("Signup successful");
+
     navigate("/");
   } catch (error) {
-    alert(error?.response?.message || "Signup failed");
+    toast.error(error?.response?.data?.message || "Signup failed");
   } finally {
     dispatch(setAuthLoading(false));
   }
@@ -82,9 +85,10 @@ export const logout = (navigate) => async (dispatch) => {
     dispatch(logoutUser());
     dispatch(clearCart());
 
+    toast.success("Logged out successfully");
     navigate("/auth");
   } catch (error) {
-    console.error("Logout failed", error);
+    toast.error(error?.response?.data?.message || "Logout failed");
   } finally {
     dispatch(setAuthLoading(false));
   }

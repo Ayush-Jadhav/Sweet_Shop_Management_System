@@ -3,6 +3,7 @@ import { clearCart } from "../../redux/slice/cartSlice";
 import CartItem from "./CartItem";
 import { createOrderService } from "../../Services/order/orderManagement";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import "./CartSidebar.css";
 
 const CartSidebar = ({ isOpen, onClose }) => {
@@ -21,15 +22,18 @@ const CartSidebar = ({ isOpen, onClose }) => {
         quantity: item.quantity,
       }));
 
-      console.log("item list Details: ", payload);
-
       await createOrderService(payload);
 
       dispatch(clearCart());
       onClose();
-      alert("Order placed successfully");
+
+      toast.success(
+        "Order placed successfully. Please check your email (including spam folder)."
+      );
     } catch (err) {
-      alert(err.message || "Failed to place order");
+      toast.error(
+        err?.response?.data?.message || err?.message || "Failed to place order"
+      );
     } finally {
       setLoading(false);
     }
@@ -55,9 +59,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           {items.length === 0 ? (
             <p className="empty-cart">Cart is empty</p>
           ) : (
-            items.map((item) => (
-              <CartItem key={item._id} item={item} />
-            ))
+            items.map((item) => <CartItem key={item._id} item={item} />)
           )}
         </div>
 

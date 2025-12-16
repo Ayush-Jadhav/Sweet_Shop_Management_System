@@ -41,20 +41,17 @@ const AdminSweetManagement = () => {
 
   return (
     <div className="admin-sweet-page">
-       {" "}
       <div className="admin-sweet-header">
-            <h2 className="admin-sweet-title">Sweet Inventory</h2>   {" "}
+            <h2 className="admin-sweet-title">Sweet Inventory</h2> 
         <button onClick={() => setShowAddModal(true)} className="add-sweet-btn">
-                + Add Sweet    {" "}
+                + Add Sweet    
         </button>
-         {" "}
       </div>
-       {" "}
+
       {sweets.length === 0 ? (
         <p className="admin-empty">No sweets available</p>
       ) : (
         <div className="admin-sweet-grid">
-               {" "}
           {sweets.map((sweet) => (
             <AdminSweetCard
               key={sweet._id}
@@ -64,7 +61,6 @@ const AdminSweetManagement = () => {
               onEdit={handleEdit}
             />
           ))}
-             {" "}
         </div>
       )}
       {showAddModal && (

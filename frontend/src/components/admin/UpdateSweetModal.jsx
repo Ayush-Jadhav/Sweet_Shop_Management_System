@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateSweetService } from "../../Services/sweetManagement/sweetManagementService";
+import { toast } from "react-toastify";
 import "./UpdateSweetModal.css";
 
 const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
@@ -11,7 +12,7 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
     category: sweet.category || "",
     price: sweet.price || "",
     quantity: sweet.quantity || "",
-    image: null, // Stores the new file object
+    image: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -24,10 +25,7 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
-    setForm((prev) => ({
-      ...prev,
-      image: file,
-    }));
+    setForm((prev) => ({ ...prev, image: file }));
 
     if (file) {
       setImagePreview(URL.createObjectURL(file));
@@ -52,7 +50,6 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
       setLoading(true);
 
       const formData = new FormData();
-
       formData.append("name", form.name);
       formData.append("category", form.category);
       formData.append("price", form.price);
@@ -68,13 +65,12 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
 
       await updateSweetService(sweet._id, formData);
 
+      toast.success("Sweet updated successfully");
       refresh();
       onClose();
     } catch (err) {
       console.error("Update sweet failed", err);
-      const errorMessage =
-        err?.response?.data?.message || "Failed to update sweet";
-      alert(errorMessage);
+      toast.error(err?.response?.data?.message || "Failed to update sweet");
     } finally {
       setLoading(false);
     }
@@ -83,9 +79,8 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
   return (
     <div className="update-sweet-overlay">
       <div className="update-sweet-modal">
-        <h3 className="update-sweet-title">Update Sweet: {sweet.name}</h3>{" "}
-        {/* Added sweet name for clarity */}
-        {/* Using a form tag for proper submission handling */}
+        <h3 className="update-sweet-title">Update Sweet: {sweet.name}</h3>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -93,7 +88,6 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
           }}
           className="update-sweet-form"
         >
-          {/* Input fields */}
           <input
             type="text"
             name="name"
@@ -102,6 +96,7 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
             placeholder="Sweet name"
             required
           />
+
           <input
             type="text"
             name="category"
@@ -109,6 +104,7 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
             onChange={handleChange}
             placeholder="Category"
           />
+
           <input
             type="number"
             name="price"
@@ -118,6 +114,7 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
             required
             min="1"
           />
+
           <input
             type="number"
             name="quantity"
@@ -128,9 +125,8 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
             min="0"
           />
 
-          {/* Image Management Group */}
+          {/* Image Management */}
           <div className="image-management-group">
-            {/* 1. Preview */}
             {imagePreview && (
               <div className="image-preview-wrapper">
                 <img
@@ -141,7 +137,6 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
               </div>
             )}
 
-            {/* 2. File Input */}
             <div className="file-input-group">
               <label className="file-label">New Product Image (Optional)</label>
               <input
@@ -153,7 +148,6 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
               />
             </div>
 
-            {/* 3. Removal Checkbox */}
             <div className="remove-image-checkbox-group">
               <input
                 id="remove-image-checkbox"
@@ -167,7 +161,6 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="update-sweet-actions">
             <button
               type="button"
@@ -177,6 +170,7 @@ const UpdateSweetModal = ({ sweet, onClose, refresh }) => {
             >
               Cancel
             </button>
+
             <button
               type="submit"
               className="update-btn-save"

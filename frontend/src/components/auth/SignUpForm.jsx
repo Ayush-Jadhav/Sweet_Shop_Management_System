@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { sendOTP } from "../../Services/auth/authService";
 import { setSignupData } from "../../redux/slice/authSlice";
+import { toast } from "react-toastify";
 
 const SignUpForm = () => {
   const dispatch = useDispatch();
@@ -33,11 +34,10 @@ const SignUpForm = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
-    console.log("Signup data:", formData);
     dispatch(setSignupData(formData));
     dispatch(sendOTP(formData.email, formData.number, navigate));
   };

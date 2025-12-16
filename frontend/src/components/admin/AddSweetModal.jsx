@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createSweetService } from "../../Services/sweetManagement/sweetManagementService";
+import { toast } from "react-toastify";
 import "./AddSweetModal.css";
 
 const AddSweetModal = ({ onClose, refresh }) => {
@@ -29,10 +30,16 @@ const AddSweetModal = ({ onClose, refresh }) => {
       }
 
       await createSweetService(fd);
+
+      toast.success("Sweet added successfully");
       refresh();
       onClose();
     } catch (error) {
-      alert(error?.message || "Failed to create sweet");
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to create sweet"
+      );
     } finally {
       setLoading(false);
     }
@@ -48,44 +55,34 @@ const AddSweetModal = ({ onClose, refresh }) => {
             type="text"
             placeholder="Sweet Name"
             value={form.name}
-            onChange={(e) =>
-              setForm({ ...form, name: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
 
           <input
             type="text"
             placeholder="Category"
             value={form.category}
-            onChange={(e) =>
-              setForm({ ...form, category: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, category: e.target.value })}
           />
 
           <input
             type="number"
             placeholder="Price"
             value={form.price}
-            onChange={(e) =>
-              setForm({ ...form, price: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
           />
 
           <input
             type="number"
             placeholder="Quantity"
             value={form.quantity}
-            onChange={(e) =>
-              setForm({ ...form, quantity: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, quantity: e.target.value })}
           />
 
           <input
             type="file"
             accept="image/*"
-            onChange={(e) =>
-              setForm({ ...form, image: e.target.files[0] })
-            }
+            onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
           />
         </div>
 
