@@ -2,6 +2,7 @@ const User = require("../models/user");
 const OTP = require("../models/otpForRegister");
 const bcrypt = require("bcryptjs");
 const otpGenerator = require("otp-generator");
+const { SendMail } = require("../utils/mailSender");
 
 exports.sendOTP = async (req, res) => {
   try {
@@ -23,13 +24,19 @@ exports.sendOTP = async (req, res) => {
     });
 
     console.log("otp", otp);
+
     // create otp for email verification and send mail
     const sendOTP = await OTP.create({ number, email, otp });
+
+    SendMail({
+      to: email,
+      subject: "Email Verification Mail from Sweet Shop",
+      html: `Your One Time Password is: <b>${otp.otp}</b>`,
+    }).catch(console.error);
 
     return res.status(200).json({
       success: true,
       message: "OTP generates and sent successfully",
-      otp,
     });
   } catch (err) {
     console.error(err);

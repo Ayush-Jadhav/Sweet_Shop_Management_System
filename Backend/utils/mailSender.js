@@ -1,5 +1,27 @@
-const nodemailer = require("nodemailer");
-const { ses } = require("../config/awsSesConfig");
+// const nodemailer = require("nodemailer");
+// const { ses } = require("../config/awsSesConfig");
+const sgMail = require("@sendgrid/mail");
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+exports.SendMail = async ({ to, subject, html }) => {
+  try {
+    await sgMail.send({
+      to,
+      from: {
+        email: process.env.SENDGRID_FROM_EMAIL,
+        name: "Sweet Shop",
+      },
+      subject,
+      html,
+    });
+
+    console.log("Email sent successfully");
+  } catch (error) {
+    console.error("SendGrid error:", error.response?.body || error);
+    throw error;
+  }
+};
 
 /* exports.SendMail = async ({to,subject,body})=>{
 
@@ -22,25 +44,25 @@ const { ses } = require("../config/awsSesConfig");
 
 } */
 
-exports.SendMail = async ({ to, subject, body }) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.HOST,
-      auth: {
-        user: process.env.USER,
-        pass: process.env.PASS,
-      },
-    });
+// exports.SendMail = async ({ to, subject, body }) => {
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       host: process.env.HOST,
+//       auth: {
+//         user: process.env.USER,
+//         pass: process.env.PASS,
+//       },
+//     });
 
-    const mailResponse = await transporter.sendMail({
-      from: `Property On Rent`,
-      to: `${to}`,
-      subject: `${subject}`,
-      html: `${body}`,
-    });
+//     const mailResponse = await transporter.sendMail({
+//       from: `Property On Rent`,
+//       to: `${to}`,
+//       subject: `${subject}`,
+//       html: `${body}`,
+//     });
 
-    return mailResponse;
-  } catch (err) {
-    console.log("error in nodemailer", err);
-  }
-};
+//     return mailResponse;
+//   } catch (err) {
+//     console.log("error in nodemailer", err);
+//   }
+// };

@@ -22,13 +22,12 @@ const processOrder = async (orderData) => {
       return;
     }
 
-    // Idempotency check 
+    // Idempotency check
     if (order.status !== "PENDING") {
       await session.abortTransaction();
       session.endSession();
       return;
     }
-
 
     // Atomic & parallel inventory update
     const updatePromises = order.items.map((item) => {
@@ -131,7 +130,7 @@ const processOrder = async (orderData) => {
       await SendMail({
         to: order.userId.email,
         subject: `Order #${order.orderId} Failed`,
-        body: `
+        html: `
           Your order <strong>#${order.orderId}</strong> has failed.<br>
           Reason: ${order.failureReason}
         `,

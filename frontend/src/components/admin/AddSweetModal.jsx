@@ -1,4 +1,3 @@
-// components/admin/AddSweetModal.jsx
 import { useState } from "react";
 import { createSweetService } from "../../Services/sweetManagement/sweetManagementService";
 import "./AddSweetModal.css";
