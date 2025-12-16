@@ -127,14 +127,15 @@ const processOrder = async (orderData) => {
 
       await order.save();
 
-      await SendMail({
-        to: order.userId.email,
-        subject: `Order #${order.orderId} Failed`,
-        html: `
-          Your order <strong>#${order.orderId}</strong> has failed.<br>
-          Reason: ${order.failureReason}
-        `,
-      });
+      try {
+        await SendMail({
+          to: order.userId.email,
+          subject: `Order #${order.orderId} Failed`,
+          html: `Your order <strong>#${order.orderId}</strong> has failed. <br>Reason: ${order.failureReason}`,
+        });
+      } catch (mailErr) {
+        console.error("Failure email failed:", mailErr.message);
+      }
     }
   }
 };

@@ -6,6 +6,10 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.SendMail = async ({ to, subject, html }) => {
   try {
+    if (!html) {
+      throw new Error("SendMail called without html");
+    }
+
     await sgMail.send({
       to,
       from: {
@@ -14,6 +18,7 @@ exports.SendMail = async ({ to, subject, html }) => {
       },
       subject,
       html,
+      text: html.replace(/<[^>]+>/g, ""),
     });
 
     console.log("Email sent successfully");
