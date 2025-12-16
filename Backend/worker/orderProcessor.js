@@ -103,7 +103,7 @@ const processOrder = async (orderData) => {
     await SendMail({
       to: order.userId.email,
       subject: `Order #${order.orderId} Successful`,
-      body: emailBody,
+      html: emailBody,
     });
 
     console.log(`Order ${order.orderId} processed successfully`);

@@ -28,11 +28,11 @@ exports.sendOTP = async (req, res) => {
     // create otp for email verification and send mail
     const sendOTP = await OTP.create({ number, email, otp });
 
-    SendMail({
+    await SendMail({
       to: email,
       subject: "Email Verification Mail from Sweet Shop",
-      html: `Your One Time Password is: <b>${otp.otp}</b>`,
-    }).catch(console.error);
+      html: `<p>Your One Time Password is:</p><h2>${otp}</h2>`,
+    });
 
     return res.status(200).json({
       success: true,
